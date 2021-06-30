@@ -1,4 +1,4 @@
-package com.jon.api.owner.Entity;
+package com.jon.api.client.Entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class User {
-    Integer id;
+    String id;
     String name;
     String email;
     String telephone;

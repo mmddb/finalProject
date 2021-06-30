@@ -1,11 +1,12 @@
-package com.jon.api.owner;
+package com.jon.api.client;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+
 @SpringBootApplication
-@MapperScan("com.jon.api.owner.mapper")
+@MapperScan("com.jon.api.client.mapper")
 public class DemoApplication {
 
     public static void main(String[] args) {

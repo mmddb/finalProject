@@ -1,4 +1,4 @@
-package com.jon.api.owner.demo;
+package com.jon.api.client.demo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
