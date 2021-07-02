@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 public class LoginResult {
 
     private Integer code; // 状态码
-
     private String msg;
-
     private Object result; // 响应的数据
 }

@@ -15,4 +15,6 @@ public class User {
     String email;
     String telephone;
     String password;
+
+    String token;
 }

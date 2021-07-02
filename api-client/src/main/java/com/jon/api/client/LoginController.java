@@ -5,8 +5,12 @@ import com.jon.api.client.Entity.LoginInfo;
 import com.jon.api.client.Entity.LoginResult;
 import com.jon.api.client.Entity.User;
 import com.jon.api.client.mapper.UserMapper;
+import com.jon.api.client.util.JwtUtil;
+import io.jsonwebtoken.Jwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 //@RequestMapping(path="/login",
@@ -17,13 +21,10 @@ public class LoginController {
     @Autowired(required = false)
     private UserMapper userMapper;
 
-    @GetMapping("/login")
-    public LoginResult test(){
-        User user = userMapper.findUserByName("root");
-        if(user != null){
-            return new LoginResult(200,"登录成功",user);
-        }
-        return new LoginResult(500,"登录失败", null);
+    @GetMapping("/checkToken")
+    public Boolean checkToken(HttpServletRequest request){
+        String token = request.getHeader("token");
+        return JwtUtil.parse(token);
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -46,7 +47,12 @@ public class LoginController {
 
         User user = userMapper.findUserByEmail(email);
 
+
+
         if(user != null && user.getPassword().equals(pwd)){
+            String token = JwtUtil.jwt(user.getName(),"administer");
+            System.out.println(token);
+            user.setToken(token);
             return new LoginResult(200,"登录成功",user);
         }
         if(user == null){
