@@ -1,4 +1,4 @@
-package com.jon.api.client.Entity;
+package com.jon.api.user.Entity;
 
 public class Order {
 
@@ -17,6 +17,4 @@ public class Order {
     private String driverId;
 
     private OrderStatus status;
-
-
 }

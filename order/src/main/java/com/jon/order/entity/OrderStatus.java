@@ -1,5 +1,5 @@
-package com.jon.api.client.Entity;
+package com.jon.order.entity;
 
 enum OrderStatus {
-    PUBLISHED, FETCHED, TRANSPORTING, COMPLETED;
+    PUBLISHED, FETCHED, TRANSPORTED,  COMPLETED;
 }

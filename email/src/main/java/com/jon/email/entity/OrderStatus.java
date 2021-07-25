@@ -1,4 +1,4 @@
-package com.jon.order.entity;
+package com.jon.email.entity;
 
 enum OrderStatus {
     PUBLISHED, FETCHED, TRANSPORTED,  COMPLETED;

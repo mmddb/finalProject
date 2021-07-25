@@ -1,4 +1,4 @@
-package com.jon.api.client.Entity;
+package com.jon.api.user.Entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

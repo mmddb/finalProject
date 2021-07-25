@@ -1,4 +1,4 @@
-package com.jon.api.client.util;
+package com.jon.api.user.util;
 
 import io.jsonwebtoken.*;
 
@@ -9,20 +9,18 @@ import java.util.UUID;
 public class JwtUtil {
 
     private static long time  = 1000*60*60*24;
-    private static String signature = "jon";
+    private static String signature = "bravoTransport";
     private static String secret = Base64.getEncoder().encodeToString(signature.getBytes());
 
 
-    public static String jwt(String username, String role){
-
+    public static String jwt(String userId, String role){
         JwtBuilder jwtBuilder = Jwts.builder();
-
         return jwtBuilder.setHeaderParam("typ", "jwt")
                 .setHeaderParam("alg", "HS256")
                 // payload
-                .claim("username", username)
+                .claim("userId", userId)
                 .claim("role", role)
-                .setSubject("jwt-test")
+                .setSubject("jwt-token")
                 .setExpiration(new Date(System.currentTimeMillis() + time))
                 // signature
                 .setId(UUID.randomUUID().toString())
@@ -30,7 +28,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    public static boolean parse(String token){
+    public static boolean tokenValid(String token){
         JwtParser parser = Jwts.parser();
         try {
             Jws<Claims> claimsJws = parser.setSigningKey(secret).parseClaimsJws(token);
@@ -38,6 +36,12 @@ public class JwtUtil {
             return false;
         }
         return true;
+    }
+
+    public static String getId(String token){
+        JwtParser parser = Jwts.parser();
+        Jws<Claims> claimsJws = parser.setSigningKey(secret).parseClaimsJws(token);
+        return (String) claimsJws.getBody().get("userId");
     }
 
 

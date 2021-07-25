@@ -1,10 +1,10 @@
-package com.jon.api.client.demo;
+package com.jon.api.user.demo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DemoApplicationTests {
+class UserApplicationTests {
 
     @Test
     void contextLoads() {

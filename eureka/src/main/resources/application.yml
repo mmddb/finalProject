@@ -1,4 +1,9 @@
 eureka:
+  client:
+    register-with-eureka: false  # not register itself
+    fetch-registry: false  # dont cache registry table in local
   server:
     enable-self-preservation: false
 
+server:
+  port: 8761

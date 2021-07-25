@@ -1,10 +1,8 @@
-package com.jon.api.client.demo;
+package com.jon.api.user.demo;
 
 import io.jsonwebtoken.*;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Base64;
 import java.util.Date;

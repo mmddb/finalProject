@@ -1,4 +1,4 @@
-package com.jon.api.user.config;
+package com.jon.api.user;
 
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
