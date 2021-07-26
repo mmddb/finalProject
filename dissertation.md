@@ -50,21 +50,21 @@ Winston, Clifford. "A Disaggregate Model of the Demand for Intercity Freight Tra
 
 
 
-### Existing applications
-
-
+### Existing  applications
 
 **Traditional transport companies** (**high cost and low timeliness)**
 
-Reliant, AnyVan, The company have their **own transport vehicles, drivers** and many staff and cost a lot to maintain daily e xpenses. If people want to transport some large items, people first go to the website to fill in item-related information to quote and then wait for the company to reply the specific price. After the customer confirms the order, the company arranges for the vehicle to pick up the goods. **a lot of procedure**
+Exploring applications across platforms, there are two types of applications worth mentioning. The first type of application is developed by traditional transportation companies which have their  own transport vehicles, drivers and many staff to run the daily business. With the help of the Internet, these applications broaden the marketing channels of its transportation services and help companies attract potential consumers. But at the same time, the cumbersome transportation service process and the large operating costs of the company have not changed. These applications including Barrington Freight, Street Stream[27,28], etc.  If people want to transport some items, they first go to the website to fill in item-related information to quote and then wait for the company to reply the specific price. After the customer confirms the order, the company arranges for the vehicle to pick up the goods and customer wait for the transportation service to be completed. These applications are backed by traditional transportation companies and have a good problem handling mechanism, so they have a good reputation in the customer group. However, limited by the traditional process and large staff group, the service process is more complicated and consumes more time and money for consumers.
 
 
 
-**Online transport Platform**
+**Online transportation marketplace**
 
-**Gatemover**: user first describe the move and app will send the request to transport companies meet the requirements, then the user get specific quotes from these carriers then Getamover leave consumer and carriers do the business. The **transport companies can register in the Gatemover** with some subscirptions fees.
+The second type of application is some online transportation marketplaces aim to connect people and transport companies, they provide a platform for users to obtain delivery, transport and removal services from their transport partners. These applications including Gatemover, Anyvan, etc. In the Gatemover, the **transport companies can register in the Gatemover** with some subscirptions fees. User first describe the move in the applicaiton, then app will do some filter or routing process and send the request to specfic transport companies met the requirements, then the user get specific quotes from these carriers, Getamover leave consumer and carriers do the business after user accept the quote. 
 
-The Getamover connected the consumer and companies, help carriers  get access to the consumer, but the filter process of transport companies is **not transparent**, transport end still cannot see the whole request information of the consumer. Then there are some chance that the provider and consumer cannot be paired reasonably. **Not for individual drivers.** 
+Anyvan's service model is basically the same, it matches a user’s transportation route to that of a transport provider’s and connects them,  minimising costs and cutting down CO2 emission by optimising storage space and haulage[32,33]. All transportation partners will paint the anyvan logo on the car and provide services in the name of Anyvan. [31].
+
+These applications connected the consumer and companies, help carriers  get access to the consumer and contributed to improving the environmental protection and efficiency of transportation. However, The entire demand-side situation is still **not transparent** to the actual supplier, and customers have almost **no right** to select service providers and negotiate prices, this may result in some demands on the market that cannot be matched reasonably. In addition, they ignore other idle transportation resources in the society. Service providers in the online market are still companies, and they **do not accept individual** transportation service providers.
 
 
 
@@ -483,3 +483,17 @@ tomorrow [C]//Proceedings of the Present and Ulterior Software Engineering. Spri
 2017: 195-216.
 [26] Kholy M E, Fatatry A E. Framework for interaction between databases and microservice
 architecture [J]. IT Professional, 2019, 21(5): 57-63.
+
+[27] https://www.anyvan.com/ , Anyvan
+
+[28]https://www.barringtonfreight.co.uk/
+
+[29] https://www.streetstream.co.uk/
+
+[30]  https://www.getamover.co.uk/
+
+[31] Frost, Maisha (20 November 2013). ["Moving with the times: Website innovation drives growth"](http://www.express.co.uk/finance/personalfinance/444058/Moving-with-the-times-Website-innovation-drives-growth).
+
+[32] Johnson, Jessica (12 November 2009). ["Website to change way we transport goods?"](http://www.express.co.uk/expressyourself/139763/Website-to-change-way-we-transport-goods).
+
+[33] Brignall, Miles (11 March 2011). ["Make a delivery and cover your petrol costs"](https://www.theguardian.com/money/2011/mar/12/make-a-delivery-petrol-costs) – via The Guardian.
