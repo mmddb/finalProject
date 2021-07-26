@@ -42,11 +42,7 @@ As an O2O network transportation platform, the proposed application connected of
 
 
 
-// need some statistics
 
-(低价吸引人) In general, however, it appears that the opportunities for attracting traffic are greater through lower rates than improvements in service quality.
-
-Winston, Clifford. "A Disaggregate Model of the Demand for Intercity Freight Transportation." *Econometrica* 49, no. 4 (1981): 981-1006. Accessed July 24, 2021. doi:10.2307/1912514.
 
 
 
@@ -72,10 +68,21 @@ These applications connected the consumer and companies, help carriers  get acce
 
 ### Novelty of proposed application
 
-1. Decrease the cost in transport end
-2. Make the transport demands **transparent**
-3. seperated 
-4. Restrict drivers and Protect consumer rights
+On the basis of understanding existing applications, the proposed application has some novelties on the supply side, demand side, and utilization of social transportation resources.
+
+On the supply side, the application absorb personal transportation service providers and create a transparent transportation market. This application accepts the registration of most individual drivers, and exposes all freight orders requested by users to drivers. Drivers can choose orders on the platform to bid according to their schedule and freight capacity.
+
+On the demand side, the platform gives customers more right to choose and restrict service providers. After the customer reqeusts the order, he will receive quotes from multiple drivers. The personal information and reviews of these drivers can be viewed. Customers can accept the offer after a thorough consideration and leave reviews after the transportation is completed.
+
+Also, the proposed application is committed to integrating the idle transportation resources in the society to meet the scattered and low-frequency transportation needs. It also provides a transformational idea for the freight companies impacted by the covid-19. Therefore, the project has some positive significance for the efficient use of transportation resources.
+
+
+
+// need some statistics
+
+(低价吸引人) In general, however, it appears that the opportunities for attracting traffic are greater through lower rates than improvements in service quality.
+
+Winston, Clifford. "A Disaggregate Model of the Demand for Intercity Freight Transportation." *Econometrica* 49, no. 4 (1981): 981-1006. Accessed July 24, 2021. doi:10.2307/1912514.
 
 
 
