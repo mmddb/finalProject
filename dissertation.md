@@ -1,26 +1,12 @@
-** 价格灵活：
-
-** 利用闲散资源：同样打车的模式，利用社会闲散运力，
-
-** 降低空载率：对货运来说，解决空载率的问题，对于传统货运网站来说，完成一单后，在回程时有空载的问题，借助平台
-
-
-
-### Objectives:
-
-
-
-
-
 #  <u>Background</u>
 
+   ！！target user and market 可以留到 introduction ？
 
-
-### Target User and Market
+### 1 Target User and Market   
 
 The proposed application targets clients and drivers in short haul transport market and aims to help both parties complete the transportation. The client party including students who need transport their stuff after graduate, buyer or seller trading in Ebay, ordinary people who need transport bulky items sometimes and small businesses which need some transportation just in city. The driver party including individual drivers who have big cars like van, pick up or trucks and small local carrier companies.   
 
-**On the demand side,** people’s demand for short-distance cargo transportation is increasing.
+**On the demand side,** people’s demand for **short-distance freight transportation** is increasing.
 
 According to the Office of National Statistics, with an estimate of almost 600 million tonnes, the short haul transportation (goods remained in the same 173 NUTS3 region) make up for 43% of the goods lifted domestically by GB HGVs in 2018 [1]. Moreover, the amount of short haul transport have been increasing with 25% since 2013. Also, the proportion of household and office removals and other non-market goods has gradually increased in recent years.[2] 
 
@@ -30,7 +16,7 @@ According to the report by IFC [3], due to additional restrictions, the volume o
 
 
 
-### O2O Service Model
+### 2 O2O Service Model
 
 [4]With the development of e-commerce, a new e-commerce model, O2O (Online to Offline), has come into being. This model connects offline business opportunities with the Internet, allowing customers filter services online and get the service offline.Alex Rampel [5] first proposed the concept of O2O in 2010. He believes that this model can attract more customers, companies find target customers through the network platform. Lu Yiqing and Li Chen (2013) [6] looked forward to the future development prospects and were very optimistic about the future development and potential of the O2O model. Many companies already adopted the O2O models for their businesses such as Amazon, Welmart, Alibaba [7].
 
@@ -40,13 +26,7 @@ As an O2O network transportation platform, the proposed application connected of
 
 
 
-
-
-
-
-
-
-### Existing  applications
+### 3 Existing  applications
 
 **Traditional transport companies** (**high cost and low timeliness)**
 
@@ -66,7 +46,7 @@ These applications connected the consumer and companies, help carriers  get acce
 
 
 
-### Novelty of proposed application
+### 4 Novelty of proposed application
 
 On the basis of understanding existing applications, the proposed application has some novelties on the supply side, demand side, and utilization of social transportation resources.
 
@@ -78,17 +58,9 @@ Also, the proposed application is committed to integrating the idle transportati
 
 
 
-// need some statistics
+！！ 讲一些别的可以
 
-(低价吸引人) In general, however, it appears that the opportunities for attracting traffic are greater through lower rates than improvements in service quality.
-
-Winston, Clifford. "A Disaggregate Model of the Demand for Intercity Freight Transportation." *Econometrica* 49, no. 4 (1981): 981-1006. Accessed July 24, 2021. doi:10.2307/1912514.
-
-
-
-
-
-### Microservices architectural style 
+### 5 Microservices architectural style  ( needs others )
 
 In 2014, Fowler and Lewis formally introduced the concept of microservice architecture [8]. It advocates the division of an application into a set of fine-grained services that interact with each other using lightweight communication mechanisms to provide ultimate value to the user [9]. Typically, these fine-grained microservices are small programs with a single responsibility that can be deployed, extended and tested independently [10-11].
 
@@ -110,104 +82,136 @@ Firstly, microservices interact with each other through REST and RPC, which make
 
 
 
+# <u>Design &  Architecture</u> 
 
 
 
+ ##  1 Methodology 
 
-### REST architectural style 
+​       1.Design the business process (by myself, including the features discussing before)  -> develop the front and back end -> have some test  ( **unit test** (test individual services, do some pressure test,  maybe write some scripts ), **integrated test** (do some user test,  mock process (mock address and virtual driver, collect the thoughts of users during the process)  -> update app with some new features and accomplish a robust backend -> (do evaluation -> future work )   <u>minimal -> advanced</u>**<u>some software dev method reference</u>**
 
-Acronym for **RE**presentational **S**tate **T**ransfer. It is architectural style for **distributed hypermedia systems** and was first presented by Roy Fielding in 2000 in his famous [dissertation](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm).
-
-Principles, pros, cons	
-
-		1. **Stateless** (use HTTP)
-		2. use JSON object in request and response (lighter, self-explanation)
-		3. http state code: 
-		4. use URI to describe intentation
+从 minimal -》 advanced 迭代过程，一些 软件开发方法？
 
 
 
+ ## 2 Design
 
-
-## <u>Architecture & Design</u>
-
-1. #### **Methodology**
-
-   
-
-2. #### Design
-
-   ![截屏2021-07-24 15.56.46](/Users/jon/Desktop/截屏2021-07-24 15.56.46.png)Iteration development process: ?? what method? 
-
-   **First** step: develop the **core activities**
-
-   1) client can publish the transportation order and cancel order
-
-   2) driver can check the details of the order and fetch order
-
-   3) client and dirver can  get notification  in time when order status changed.
+   // use case diagram
 
    ![截屏2021-07-14 15.53.46](/Users/jon/Library/Application Support/typora-user-images/截屏2021-07-14 15.53.46.png)
 
    
 
+   // sequence diagram
+
+   ![sequence diagram](/Users/jon/Downloads/sequence diagram-2.png)
+
    
 
-   **User Journey**
+   Introduction of basic activities. **maybe one detailed part**
+
+// **data schema**   ！！ 数据库图放到这里
+
+ // user journey
 
    ![截屏2021-07-22 15.10.53](/Users/jon/Library/Application Support/typora-user-images/截屏2021-07-22 15.10.53.png)
 
-   
-
-   **Second** step: add advanced process (security, ) in project, and make the process robust and solid, fix bug;
-
-   **Finally**: do some user test and imporve the project.
 
 
-
-### Services Component division
-
-**a. Break down the business process**
-
-based on the request to the **database** , we can divide the services to, User service, Order service, Notification Service, 
-
-**User service**: authentication, look and make reviews, => Users table, Review table
-
-**Order Service**: publish, check, fetch, cancel order, => Order table
-
-**Notification Service**: send email with different content ( order status update，new quote )
-
-
-
-**b. Define service granularity**
-
-first make it bigger and ,   in the 
-
-**c. Define service interface**
-
-​		**use RESTful API**,  ?? goods ...return JSON, including hypermedia links , make consumer easier to do next steps 
 
 ​		
 
+##   2 Architecture
+
+
+
+![ds](/Users/jon/Downloads/Architecture.png)
+
+
+
+Component, layered design:
+
+Fronted-end: brief intro
+
+back-end: 
+
+Interface layer: gateway accept the request, routing, authentication, ...
+
+services layer: Actual service modules: provide actual services
+
+​						  Service management module: like service registry and discovery, service monitor
+
+database save data and cache, infrastructure use cloud server (goods ?)
 
 
 
 
 
+## **3 Services layer design**
 
-3. ###  **Architecture**
+**a. Services Component division** 
 
-   
+objective: individual microservice feature, less-coupled, minimise invoke other services. 
 
-   ![Architecture](/Users/jon/Downloads/Architecture.png)
+based on the request to the **database** and the request info's category, and **service granularity**
 
-   
+we first divide out 3 services, in the after process if the service too big , we make it samller.
 
-   ### **platform , language, framework**
+**User service**: get user's info, get request token, look and make reviews, => Users table, Review table, payment table
 
-   Platform: Web
+**Order Service**: publish, check, fetch, cancel order, gvie quote to specific order => Order table, Quote table
 
-   Framework: Vue, Spring Cloud
+**Notification Service**: send email with different content ( order status update，new quote, registry 
+
+
+
+**b. Define service interface**
+
+​		**use RESTful API**,  
+
+Acronym for **RE**presentational **S**tate **T**ransfer. It is architectural style for **distributed hypermedia systems** and was first presented by Roy Fielding in 2000 in his famous dissertation[34].
+
+Principles, pros, cons	
+
+		1. **Stateless** (use HTTP)
+		3. http state code: readable
+		4. use URI and request method to describe intentation
+
+
+
+**c. communication between services**
+
+1. **MQ**:  make some request asynchronized, more efficient (the email service subscribe, the order service, user service publish)
+
+
+
+
+
+**First** step: develop the **core activities**
+
+1) client can publish the transportation order and cancel order
+2) driver can check the details of the order and fetch order
+3) client and dirver can  get notification  in time when order status changed.
+
+**Second** step: add advanced process (security, ) in project, and make the process robust and solid, fix bug;
+
+**Finally**: do some user test and imporve the project.
+
+
+
+
+
+## **Platform , framework**
+
+**Platform**: with the advantages of RESTful api, the application can easily deploy in web or mobile devices.
+
+first we deploy the app at web (easily, have a try), when the app is good enough in the future, then develop the mobile app in IOS or Android.
+
+**Framework** and Language: 
+
+front-end : Vue, (js, html, css)
+
+back-end: Spring Boot, Spring Cloud:  intro, fitness to microservices, good community. (java)
 
 
 
@@ -219,17 +223,19 @@ ApacheBench 作为压力测试工具
 
 
 
-## Backend development
+# Backend development
 
-### 1 environment preperation
+！！ 加入测试过程？？
+
+
+
+## 0 environment preperation
 
 Spring boot, spring cloud, mysql, mybatis.., maven, swagger, jwt
 
 
 
-
-
-### 2 Services RESTful API Design
+##  1 Services RESTful API Design
 
 The very first step in designing a REST API based application is – identifying the objects which will be presented as **resources**.
 
@@ -255,6 +261,8 @@ public class User {
 }
 ```
 
+
+
 ##### 		2. Create Model URIs
 
 Now when the object model is ready, it’s time to decide the resource URIs. At this step, focus on the relationship between services and its resources. These **resource URIs are endpoints for RESTful services**. 
@@ -270,6 +278,8 @@ localhost:8082/ORDER-SERVICE/order
 ##### 		3. Determine Representations
 
 ​			JSON / XML , use json; json's advantages
+
+
 
 ##### 		4. Assign HTTP Methods 
 
@@ -309,6 +319,8 @@ Use API docs to describe the api:
 #### 1 create data table in **mysql**
 
 ![截屏2021-07-21 18.17.32](/Users/jon/Library/Application Support/typora-user-images/截屏2021-07-21 18.17.32.png)
+
+
 
 
 
@@ -385,9 +397,7 @@ public class LoginController {
 
 
 
-
-
-### 3. Service Registration and Discovery
+## 3. Service Registration and Discovery
 
 Eureka ?? goods, comparation to others
 
@@ -410,7 +420,36 @@ eureka:
 
 
 
-### 4 Service Gateway
+## Service Invoke
+
+User feign: goods, load balance? 原理
+
+1 include feign -> write interface -> autowired the interface -> then
+
+```java
+@Component
+@FeignClient(value = "USER-SERVICE")
+public interface UserFeignClient {
+
+    @RequestMapping(value = "/email")
+    String getUserEmail(@RequestParam String userId);
+}
+```
+
+
+
+```java
+@Autowired
+private UserFeignClient userFeignClient;
+
+public void getEmail() {
+        System.out.println(userFeignClient.getUserEmail("3"));
+    }
+```
+
+
+
+## 4 Service Gateway
 
 use Spring Gateway: ?? goods
 
@@ -424,11 +463,71 @@ use Spring Gateway: ?? goods
 
    check the token of request, then 
 
-   
 
-   
 
-1、client 出价，driver 出价，
+## 5 Service Monitor
+
+1. include actuator to the services, then expose all endpoints
+
+ ```xml
+   <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-actuator</artifactId>
+   </dependency>
+ ```
+
+```properties
+management.endpoints.web.exposure.include=*
+```
+
+so we can access the info on /actutor/metrics/{names}
+
+```json
+{
+  "names": [
+    "hikaricp.connections",
+    "hikaricp.connections.acquire",
+    .....
+    "tomcat.sessions.rejected"
+  ]
+}
+```
+
+the include the spring-admin to pom, and register to Eureka, fetch the registry of other services, then monitor them.
+
+![截屏2021-07-30 10.24.03](/Users/jon/Library/Application Support/typora-user-images/截屏2021-07-30 10.24.30.png)
+
+we can monitor the up and down of services,  see the running info of JVM, the loggers...
+
+![截屏2021-07-30 10.33.41](/Users/jon/Desktop/截屏2021-07-30 10.33.41.png)
+
+
+
+# Fronted-end  Development
+
+1. set dev environment 
+
+   plugins: vue-sweetalert2, google-maps,  element-ui
+
+2. login/register page
+
+3. home page ( layout...)
+
+4. publish order,  myOrder, OrderList, 
+
+
+
+
+
+// need some statistics
+
+(低价吸引人) In general, however, it appears that the opportunities for attracting traffic are greater through lower rates than improvements in service quality.
+
+Winston, Clifford. "A Disaggregate Model of the Demand for Intercity Freight Transportation." *Econometrica* 49, no. 4 (1981): 981-1006. Accessed July 24, 2021. doi:10.2307/1912514.
+
+
+
+
 
 
 
@@ -504,3 +603,5 @@ architecture [J]. IT Professional, 2019, 21(5): 57-63.
 [32] Johnson, Jessica (12 November 2009). ["Website to change way we transport goods?"](http://www.express.co.uk/expressyourself/139763/Website-to-change-way-we-transport-goods).
 
 [33] Brignall, Miles (11 March 2011). ["Make a delivery and cover your petrol costs"](https://www.theguardian.com/money/2011/mar/12/make-a-delivery-petrol-costs) – via The Guardian.
+
+[34] rest-arch https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm).

@@ -1,5 +1,6 @@
 package com.jon.email;
 
+import com.jon.email.feignClients.UserFeignClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +12,9 @@ class EmailApplicationTests {
 
     @Autowired
     private JavaMailSender mailSender;
+
+    @Autowired
+    private UserFeignClient userFeignClient;
 
     @Test
     public void sendSimpleMail() throws Exception {
@@ -24,5 +28,15 @@ class EmailApplicationTests {
 
         mailSender.send(message);
     }
+
+    @Test
+    public void getEmail() {
+        System.out.println(userFeignClient.getUserEmail("3"));
+        System.out.println(userFeignClient.getUserEmail("4"));
+        System.out.println(userFeignClient.getUserEmail("5"));
+        System.out.println(userFeignClient.getUserEmail("6"));
+        System.out.println(userFeignClient.getUserEmail("7"));
+    }
+
 
 }

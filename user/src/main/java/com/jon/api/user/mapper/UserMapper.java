@@ -37,4 +37,7 @@ public interface UserMapper {
 
     @Select("SELECT * FROM Review WHERE driverId = #{driverId} ")
     List<Review> getReviewsById(String driverId);
+
+    @Select("SELECT email FROM Users WHERE id = #{userId} ")
+    String getEmailById(String userId);
 }

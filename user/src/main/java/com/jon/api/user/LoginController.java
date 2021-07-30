@@ -178,6 +178,19 @@ public class LoginController {
         return new ResponseEntity(null, HttpStatus.CREATED);
     }
 
+    @GetMapping("/email")
+    @ApiOperation(value = "Get email information of users")
+    public ResponseEntity email(String userId){
+        String email = userMapper.getEmailById(userId);
+        if(email != null){
+            return new ResponseEntity(email, HttpStatus.OK);
+        }else{
+            return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+        }
+    }
+
+
+
 
 
 
