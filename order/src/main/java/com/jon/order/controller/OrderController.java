@@ -1,5 +1,6 @@
 package com.jon.order.controller;
 
+import com.jon.order.JwtUtil;
 import com.jon.order.entity.Order;
 import com.jon.order.entity.Quote;
 import com.jon.order.mapper.OrderMapper;
@@ -26,7 +27,9 @@ public class OrderController {
 
     @PostMapping("/order")
     @ApiOperation(value = "Publish new order to the platform")
-    public ResponseEntity publishOrder(@RequestBody Order order){
+    public ResponseEntity publishOrder(@RequestBody Order order, @RequestHeader String token){
+        System.out.println(JwtUtil.getId(token));
+        order.setClientId(JwtUtil.getId(token));
         System.out.println(order);
         try {
             orderMapper.insertOrder(order);
@@ -109,8 +112,9 @@ public class OrderController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Created successfully", response = ResponseEntity.class),
             @ApiResponse(code = 204, message = "No Content", response = ResponseEntity.class)
     })
-    public ResponseEntity setQuote(String orderId, String driverId, int quote){
+    public ResponseEntity setQuote(String orderId, String driverId, Integer quote){
 
+        System.out.println(orderId + driverId + quote);
         Quote q = new Quote();
 
         q.setOrderId(orderId);

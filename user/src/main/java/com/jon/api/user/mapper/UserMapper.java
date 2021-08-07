@@ -28,8 +28,7 @@ public interface UserMapper {
     @Insert("INSERT INTO Payment (userId,recipient,sortcode,accountnumber) VALUES(#{userId}, #{recipient}, #{sortcode},#{accountnumber})")
     void insertPayment(Payment payment);
 
-
-    @Insert("INSERT INTO Users (name,password,telephone,email) VALUES(#{name}, #{password}, #{telephone},#{email})")
+    @Insert("INSERT INTO Users (name,password,telephone,email,type) VALUES(#{name}, #{password}, #{telephone},#{email},#{type})")
     void insertUser(User user);
 
     @Insert("INSERT INTO Review (clientId,driverId,star,comment,orderId) VALUES(#{clientId}, #{driverId}, #{star},#{comment},#{orderId})")

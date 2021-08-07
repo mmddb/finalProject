@@ -30,7 +30,7 @@ public class AuthenticationFilter implements GlobalFilter {
             return chain.filter(exchange);
         }
         List<String> token = request.getHeaders().get("token");
-
+        System.out.println(token.get(0));
 
         // 如果 token 对 或者 routes 不需要 验证 （login/ signup）
         if( JwtUtil.tokenValid(token.get(0))){

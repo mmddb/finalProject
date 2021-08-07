@@ -1,4 +1,4 @@
-#  <u>Background</u>
+#  <uBackground</u>
 
    ！！target user and market 可以留到 introduction ？
 
@@ -60,6 +60,32 @@ Also, the proposed application is committed to integrating the idle transportati
 
 ！！ 讲一些别的可以
 
+5 Monolithic architecture
+
+使用单体架构(monolithic architecture)设计的软件系统会随着时间的推移变得庞大且复杂,这使得软件的 可维护性和可伸缩性几乎变得很差[35].
+
+
+
+[35]  Jonas F, Justus B, Stefan W, Alfred Z. Microservices migration in industry: Intentions, strategies, and challenges. In: Foutse K, ed.Proc. of the Int’l Conf. on Software Maintenance. 2019. 481−490. [doi: 10.1109/ICSME.2019.00081]
+
+
+
+
+
+### 4 Monilithc Architectural
+
+
+
+Monolithic Architecture (MA) [1] is the traditional method of software development, which has been used by world-renowned Internet services such as Netflix, Amazon, and eBay. In MA, all functions were encapsulating in a single application. For simple monolithic applications, it has its own advantages including easy to develop, test, deploy, and extend. However, with the development of the enterprise, the scale of the application is always growing, and will eventually become a huge monolith in a few years. At this time, the shortcomings of the monolithic architecture will outweigh its advantages. For example, the extremely complex and incomprehensible code of the MA application may hinder bug fixes and feature additions; due to a longer startup time, the huge scale of monolithic applications will slow down the speed of development and become an obstacle to continuous deployment.
+
+
+
+[6] R. Chen, S. Li and Z. Li, "From monolith to microservices: a dataflowdriven approach", *2017 24th Asia-Pacific Software Engineering Conference (APSEC)*, pp. 466-475, 2017.
+
+[1] C. Richardson, *Pattern: Monolithic architecture*, June 2017, [online] Available: http://microservices.io/patterns/monolithic.html.
+
+
+
 ### 5 Microservices architectural style  ( needs others )
 
 In 2014, Fowler and Lewis formally introduced the concept of microservice architecture [8]. It advocates the division of an application into a set of fine-grained services that interact with each other using lightweight communication mechanisms to provide ultimate value to the user [9]. Typically, these fine-grained microservices are small programs with a single responsibility that can be deployed, extended and tested independently [10-11].
@@ -97,6 +123,8 @@ Firstly, microservices interact with each other through REST and RPC, which make
  ## 2 Design
 
    // use case diagram
+
+要解释这些图怎么用的
 
    ![截屏2021-07-14 15.53.46](/Users/jon/Library/Application Support/typora-user-images/截屏2021-07-14 15.53.46.png)
 
@@ -505,15 +533,232 @@ we can monitor the up and down of services,  see the running info of JVM, the lo
 
 # Fronted-end  Development
 
-1. set dev environment 
+## 0 set dev environment 
 
-   plugins: vue-sweetalert2, google-maps,  element-ui
+researching and installing VueJS  and the VueCli tool - provided by VueJS - was used to set up the project, installing the required packages and creating an initial folder structure. This folder structure, being based on VueJS’s best practices, helped to quickly start development. 
 
-2. login/register page
+To help with the styling of the application, Bootstrap were used  In this project, Bootstrap is mainly used for its margin and responsive classes, since it allows you to quicker create a basic layout for the application development rather than doing so manually.
 
-3. home page ( layout...)
+plugins: 
 
-4. publish order,  myOrder, OrderList, 
+vue-sweetalert2,
+
+google-maps,  
+
+element-ui
+
+
+
+## 1 login / register page
+
+The login and registration page is the first interface that the user encounters after entering the system. The layout design of this part is basically the same. The upper part is a shared navigation bar, and the lower part is a form for user input. The user can switch in the upper right corner to log in and register. On the login page, the some login links of the most popular social platforms are reserved for future SSO (Single Sign-On) *[ref]* login verification. We also setting up the communication between the front and backend, including requesting a jwt-token from the backend, storing it in localStorage [36] and sending it for validation with every API call to protect again cross site request forgery (CSRF).
+
+[36] https://developer.mozilla.org/zh-CN/docs/Web/API/Window/localStorage
+
+Thanks to Vue's data binding, we can easily access the data in the form; when submitting the form, firstly, the project applies Javascript code to judge the validity of the data, avoiding invalid data being sent to the backend, and then popping up error or successfu reminder box is presented to the user, as shown in the figure below. 
+
+Then, the front end will send  Axios*[ref]* request according to the requirements of the api in the backend User Service, and then perform follow-up operations based on the http response status code. For example, for the registration process, axios send the POST request with the user information to the user service. If it returns 201, it means that the user is successfully created, returns 226, it means that the email has been registered, and if it returns 500, it means that an error occurred inside the server.
+
+In addition, in order to lower the coupling between the front and back ends, Axios only sends requests to the gateway, which also means that only the name of the requested service needs to be remembered instead of its port number. For example, 
+
+```js
+axios.post('http://localhost:8090/USER-SERVICE/user', this.form)
+```
+
+
+
+<img src="/Users/jon/Library/Application Support/typora-user-images/截屏2021-08-02 11.12.14.png" alt="截屏2021-08-02 11.12.14" style="zoom:20%;" />
+
+<img src="/Users/jon/Desktop/截屏2021-08-02 11.13.28.png" alt="截屏2021-08-02 11.13.28" style="zoom:20%;" />
+
+<img src="/Users/jon/Desktop/截屏2021-08-02 11.14.02.png" alt="截屏2021-08-02 11.14.02" style="zoom:23%;" />
+
+
+
+
+
+
+
+<img src="/Users/jon/Desktop/截屏2021-08-02 09.02.28.png" alt="截屏2021-08-02 09.02.28" style="zoom: 33%;" />
+
+
+
+<img src="/Users/jon/Desktop/截屏2021-08-02 09.02.20.png" alt="截屏2021-08-02 09.02.20" style="zoom:33%;" ><img src="/Users/jon/Desktop/截屏2021-08-02 09.04.16.png" alt="截屏2021-08-02 09.04.16" style="zoom:30%;" /
+
+
+
+## 2 Home page and common part (layout...)
+
+在登陆后，紧接着的就是home页面，这也是支持用户后续操作的所有地方。页面采用 Aside，header，main 的布局；aside 作为侧边菜单栏，提供了用户活动的入口。header显示用户相关信息，main的空间用来显示当前的活动页面，例如发布订单，查看订单信息等; main中显示的 component 包含 vue的  '' :is ''标签，这样我们在引入各个活动的 vue component 后可以把 currentView 的值改变为其他模块的名字来更换显示内容。
+
+After logging in, the home page is immediately followed, which is also the place to support all subsequent activities of the user.
+The page adopts the layout of Aside, header, and main; aside serves as the side menu bar and provides the entrance to user activities. The header displays user-related information, and the main space is used to display the current active page, such as posting orders, viewing order information, etc. The component displayed in the main contains the '' **:is** '' tag of Vue, so that after impoting the Vue component of each activity, we can change the value of currentView to the name of other modules to replace the displayed content.
+
+```html
+<component :is="currentView"></component>
+```
+
+
+
+![截屏2021-08-02 16.20.45](/Users/jon/Library/Application Support/typora-user-images/截屏2021-08-02 16.20.45.png)
+
+
+
+The sidebar includes activities such as publish order, order markets, myorders, myreviews and myInfo.
+The users of this project are divided into clients requesting transportation services and drivers providing services. In order to display different sidebars for users according to their roles, the " if  "tag of Vue was used. Before loading the html module, the User information stored when logging in was retrieved from localstroage to determine whether the user's role meets the conditions. In this way, the publish order module is not displayed for the driver, the ordermarket module is not displayed for the client, and other general modules can be displayed. The code is shown below.
+
+Driver's view:
+
+![截屏2021-08-02 17.52.59](/Users/jon/Desktop/截屏2021-08-02 17.52.59.png)
+
+Client's view:
+
+![截屏2021-08-02 17.55.27](/Users/jon/Library/Application Support/typora-user-images/截屏2021-08-02 17.55.27.png)
+
+
+
+Reviews Part
+
+
+
+![截屏2021-08-05 10.24.10](/Users/jon/Library/Application Support/typora-user-images/截屏2021-08-05 10.24.10.png)
+
+
+
+
+
+myInfo:
+
+
+
+
+
+## 3 Clients part
+
+For the client, myOrders displays his previously released order information, and uses the el-table component  design the style conveniently. In the table, the order id, address, type of goods and the status of the order are displayed. The last column is the operations that can be performed on the current order.
+
+According to the current status of the order, the user can perform different operations. When the order is first released, the status is PUBLISHED. At this time, the user can cancel the order. After the order is accepted by the driver, the status is FETCHED and the user can confirm the payment after pay the driver according to the email message. If clients are not satisfied with the driver’s previous reviews, he can still cancel the order; When the status changes to COMPLETED,  the user can make a review to the driver. Order details are independent of status and can be accessed all the time. The implementation of this part is still based on Vue's conditional display of labels, data and method binding.
+
+
+
+After setting attribute `data` of `el-table` with an object array, we used `prop` (corresponding to a key of the object in `data` array) in `el-table-column` to insert data to table columns, and set the attribute `label` to define the column name. The implementation of the last column is more complicated. The method of binding each operation in this column needs to obtain the relevant information of the order in the row to send a request to the backend and determine the operation available in the current status. We used the **‘slot-scope’** property provided by Element to get the data of the row and then pass the row object generated from the tableData inside the table to each method. For the update of the order status, we defined some methods to request backend with the parameters required, then show the user an alert box of success or failure based on the returned status code. In order to achieve the function of displaying order details, an <el-dialog> module is defined on the page, and a Boolean value **dialogVisible** is used to define whether it is displayed or not. When the user clicks the details button, it will trigger a method to change the value to True from False.
+
+
+
+![截屏2021-08-03 12.25.07](/Users/jon/Library/Application Support/typora-user-images/截屏2021-08-03 12.25.07.png)
+
+
+
+```vue
+<template slot-scope="scope">
+  <el-button @click="transportedOrder(scope.row)" v-if="scope.row.status === 'PAID'" type="text" size="small">Transported</el-button>
+  <el-button @click="cancelOrder(scope.row)" v-if="scope.row.status === 'FETCHED' || scope.row.status === 'PUBLISHED' " type="text" size="small">Cancel</el-button>
+  <el-button @click="confirmPayment(scope.row)" v-if="scope.row.status === 'FETCHED'" type="text" size="small">Paid</el-button>
+  <el-button @click="makeReview(scope.row)" v-if="scope.row.status === 'COMPLETED'" type="text" size="small">Review</el-button>
+  <el-button @click="confirmTransport(scope.row)" v-if="scope.row.status === 'TRANSPORTED'" type="text" size="small">Confirm</el-button>
+  <el-button @click="showDetails(scope.row)"  type="text" size="small">Details</el-button>
+</template>
+```
+
+
+
+
+![截屏2021-08-03 11.45.58](/Users/jon/Library/Application Support/typora-user-images/截屏2021-08-03 11.45.58.png)
+
+
+
+
+
+make review: 
+
+Using the el-rate label, the stars at the top of the dialog box represent scores, each star represents one point, and the bottom is a comment input box. These two parameters are respectively bound to the value and review variables in the component. After the user clicks submit, it will be sent to the backend.
+
+![截屏2021-08-04 14.23.01](/Users/jon/Library/Application Support/typora-user-images/截屏2021-08-04 14.23.01.png)
+
+
+
+
+
+## 4 Market part
+
+The market page is the driver's unique interface, which displays all the orders placed by users on the market and the operations that can be performed.
+
+![截屏2021-08-04 13.13.35](/Users/jon/Desktop/截屏2021-08-04 13.13.35.png)
+
+司机对于每个订单的操作有 3 种，分别是 More - 查看更多的具体信息，Quotes - 查看历史 quotes 并给订单 quote，Route - 显示路线，里程和耗时。我们在页面中创建3 个可隐藏的 dialog 模块来容纳 这三个部分的展示，并且维护当前订单信息，司机的quote，以及控制 dialog 显示的 3 个 boolean 变量。借助 <el-dialog>  的  **:visible.sync** 属性，我们给他可以绑定布尔值，这样就可以通过改变布尔值的来控制dialog 的 显示与否。
+
+There are 3 types of driver operations for each order, namely More (see more specific information), Quotes (view historical quotes and quote the order), Route (display route, mileage and time). We create three concealable dialog modules on the page to accommodate the display of these three parts, and also maintains the current order information, the driver's quote, and the three boolean variables that control the dialog display. With the help of the **:visible.sync** property of <el-dialog>, we can control the display of the dialog by changing the Boolean variable bound to it.
+
+
+
+```vue
+<el-dialog title="Quotes" :visible.sync="quotesVisible"
+           width="60%" :before-close="handleClose">
+  <Quotes :orderid="orderId" ></Quotes>
+  <span slot="footer" class="dialog-footer">
+    <el-input size="small" placeholder="input your quote" v-model="quote"></el-input>
+    <el-button type="primary" @click="quoteOrder">Submit</el-button>
+  </span>
+</el-dialog>
+```
+
+
+
+在订单信息到获取方面，向后端请求市场订单信息被封装到 Vue 方法 beforeCreate（）里面，这样，在模块显示前，我们就可以把获取到的 Order array 传入 本页面所定义的数据 orderdata。
+
+In terms of obtaining order information, the request for market order information from the backend is encapsulated in the Vue method beforeCreate(), so that before the module is displayed, we can pass the obtained Order array into the data Orderdata defined on this page.
+
+
+
+The implementation of the three operations of the order is as follows. The first is the display of the order details: similar to the previous display of MyOrders component, the order data object of the row is assigned to infodata through 'slot-scope', and the variable detailsInvisiable is set to true to display the dialog box.
+
+<img src="/Users/jon/Desktop/截屏2021-08-04 12.41.14.png" alt="截屏2021-08-04 12.41.14" style="zoom:33%;" />
+
+其次是quotes模块；用户单击 Quotes 时，quote dialog 模块就会显示，该模块由一个 quote表和 下方的一个输入框组成，输入框的 v-model 属性与 market Component's quote变量绑定，司机可以输入他心中的quote，并点击 submit 来提交（单击后 axios 带着司机id和价格给后端发送请求）。
+
+在实现的过程中, 首先创建 market 的子模块 quote component 并引入，父模块 market 会将当前行的 orderId 通过 quote component 的 porp传入 quote component，quote component 会借助这个id 向后台请求这个 orderId 所有的quote信息，最终显示信息。
+
+The second is the Quotes module; when the user clicks Quotes, the quote dialog will be displayed. It consists of a quote table and an input box below. The **v-model** attribute of the input box is bound to the Market Component's variable quote, and the driver can input price in his mind and click confirm button to submit (after clicking, Axios sends a request to the backend with the driver id, orderid and price). In the process of implementation, first create and import the sub-module quote component of the market. The parent module market will pass the orderId of the current line to the quote component through the **porp** attribute of the quote component, and the quote component will use this id to request all the quotes of this orderId from the backend Information, and finally display information on the dialog.
+
+
+
+<img src="/Users/jon/Library/Application Support/typora-user-images/截屏2021-08-04 10.50.13.png" alt="截屏2021-08-04 10.50.13" style="zoom:33%;" />
+
+
+
+最后是路线信息的显示，司机可以查看 google map下的线路规划，长度和预计时常。本部分的实现借助了第三方插件 vue2-googlemap ，在它之上，本项目开发了可以在地图上展示两点间路线的自定义的 DirectionsRenderer 模块，该模块首先获取到谷歌提供的 DirectionsService() 对象，接着携带之前申请到的谷歌开发者key以及地点和交通模式（总是设置为开车）信息请求路线信息。接着，从该路线信息中获取到第一个可选线路的距离，时间，以key-value的形式存储到 localStorage中供market 模块使用。最后借助提供 vue2-google-maps 的 setDirections() 函数绘制路线。
+
+The last is the display of route information. Drivers can check the route plan, length and estimated time under the google map. The implementation of this part uses the third-party service vue2-google-map. On this basis, this project has developed a custom DirectionsRenderer module that can display the route between two points on the map. This module first obtains the DirectionsService() object provided by Google , and then carry the Google developer key previously applied for and the location and traffic mode (always set to DRIVING) information to request route information. Then, parse out the distance and duration of the first optional route, and store it in the localStorage in the form of key-value for the Market component to use. Finally, draw the route with the help of the setDirections() function provided by vue2-google-maps.
+
+
+
+<img src="/Users/jon/Library/Application Support/typora-user-images/截屏2021-08-04 12.39.36.png" alt="截屏2021-08-04 12.39.36" style="zoom:33%;" />
+
+
+
+
+
+## Deployment
+
+后端由 MySQL 数据库支持的 Spring Boot 应用程序。对于本项目，向云端部署主要有两个方案，
+
+一种是需要自行手动配置应用但是自由度更高的 ecs 云服务器（IaaS），另外一种则是选择负责所有细节基础设施的平台即服务 (PaaS) 提供商。
+
+Because Spring Boot’s executable jars are ready-made for most popular cloud PaaS (Platform-as-a-Service) providers 和本项目的时间限制，paas 被选择以便专注于开发应用程序，而不必担心配置和维护服务器。
+
+
+
+对于 springboot项目来说，目前的大型 PaaS 提供商包括 Amazon Web Services, Google Cloud  和 Heroku [19]， Cloud Foundry等。对于 Heroku and Cloud Foundry 来说，很优秀的一点是他们 employ a pluggable “buildpack” approach. The buildpack wraps deployed code in whatever is needed to *start* the application.[40]。对上述服务商经过使用价格，可用性方面的比较，本项目决定部署到 heroku，
+
+
+
+Heroku 提供了简单易用的 CLI 工具来部署应用程序 和 多个运行时（称为 Dynos）来运行各种编程语言的应用程序。并且，部署到 Heroku 只需将源代码推送到 Heroku 的 GIT 远程。这也使未来的更新部署变得非常容易。
+
+下一步需要让应用程序与数据库通信。 Heroku 提供了一个托管的 ClearSQL 平台，可以轻松地与 Dynos 集成。
+
+
+
+[40] https://docs.spring.io/spring-boot/docs/current/reference/html/deployment.html#deployment.cloud
 
 
 
@@ -524,6 +769,18 @@ we can monitor the up and down of services,  see the running info of JVM, the lo
 (低价吸引人) In general, however, it appears that the opportunities for attracting traffic are greater through lower rates than improvements in service quality.
 
 Winston, Clifford. "A Disaggregate Model of the Demand for Intercity Freight Transportation." *Econometrica* 49, no. 4 (1981): 981-1006. Accessed July 24, 2021. doi:10.2307/1912514.
+
+
+
+
+
+# Testing
+
+## **Unit test**
+
+
+
+
 
 
 
@@ -605,3 +862,56 @@ architecture [J]. IT Professional, 2019, 21(5): 57-63.
 [33] Brignall, Miles (11 March 2011). ["Make a delivery and cover your petrol costs"](https://www.theguardian.com/money/2011/mar/12/make-a-delivery-petrol-costs) – via The Guardian.
 
 [34] rest-arch https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm).
+
+
+
+```vue
+<el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+  <el-menu :default-openeds="['1', '3']">
+    <el-menu-item index="1" @click="showPublish" v-if="usertype === 'CLIENT'">Publish</el-menu-item>
+    <el-menu-item index="2" @click="showOrderList"  v-if="usertype === 'DRIVER'"><i class="el-icon-s-marketing" ></i>Markets</el-menu-item>
+    <el-menu-item index="3" @click="showMyOrders"><i class="el-icon-s-order" ></i>MyOrders</el-menu-item>
+    <el-menu-item index="4" @click="showReviews"><i class="el-icon-s-comment"></i>Reviews</el-menu-item>
+    <el-menu-item index="5" @click="showMyInfo"><i class="el-icon-user"></i>MySelf</el-menu-item>
+  </el-menu>
+</el-aside>
+
+<script>
+import PublishOrder from "@/components/PublishOrder";
+import OrderList from "@/components/OrderList";
+import MyOrders from "@/components/MyOrders";
+import Welcome from "@/components/Welcome";
+export default {
+  name: "Home",
+  components: {PublishOrder, OrderList, MyOrders},
+  comments:{
+    PublishOrder
+  },
+  methods:{
+    showPublish: function(){
+      this.currentView = "PublishOrder";
+    },
+    showReviews: function(){
+      this.currentView = "PublishOrder";
+    },
+    ....
+  },
+  data() {
+    return {
+      usertype:"",
+      username: "",
+      currentView: "",
+      form: {
+        message: "hello"
+      },
+    }
+  },
+  created() {
+    this.currentView = Welcome;
+    this.username = JSON.parse(window.localStorage.getItem("user")).name;
+    this.usertype = JSON.parse(window.localStorage.getItem("user")).type;
+    Welcome.data().username = this.username;
+  }
+}
+</script>
+```

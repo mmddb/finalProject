@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.HeaderParam;
 import java.util.List;
 
 @RestController
@@ -115,13 +116,14 @@ public class LoginController {
     @GetMapping("/review")
     @ApiOperation(value = "Get reviews of Drivers")
     @ApiImplicitParam(name = "token", paramType = "header", required = true)
-    public ResponseEntity getReview(String userId, String token){
+    public ResponseEntity getReview(String userId, @RequestHeader String token){
         System.out.println(userId);
         System.out.println(token);
 
-        if(!JwtUtil.tokenValid(token)){
-            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
-        }
+        //  do not check here, leave it to gateway
+//        if(!JwtUtil.tokenValid(token)){
+//            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
+//        }
         List<Review> reviews = userMapper.getReviewsById(userId);
         if(reviews.size() == 0){
             return new ResponseEntity(null, HttpStatus.NO_CONTENT);

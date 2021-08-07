@@ -17,4 +17,5 @@ public class Review {
     private int star;
     private String comment;
     private int orderId;
+    private String date;
 }

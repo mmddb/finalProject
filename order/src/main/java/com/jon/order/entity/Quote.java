@@ -2,6 +2,7 @@ package com.jon.order.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.models.auth.In;
 import lombok.*;
 
 import java.sql.Date;
@@ -27,7 +28,7 @@ public class Quote {
     private String driverId;
 
     @ApiModelProperty(value = "Driver's quote for this order")
-    private int quote;
+    private Integer quote;
 
 
 }
