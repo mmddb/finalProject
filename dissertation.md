@@ -104,6 +104,16 @@ Firstly, microservices interact with each other through REST and RPC, which make
 
 
 
+## **MicroService interface**
+
+There are two popular solutions here, one is use Rpc (remote procedure call) and another is use RESTful API. A remote procedure call (RPC) is when a program causes a procedure to execute in a different physical address space, which is coded as if it were a local procedure call. Generally, the customed communication and serilization protocol were encapsulated in a framework like gRpc[] for user. 
+
+[] https://grpc.io/
+
+Rpc often use the binary serilization protocol like protobuf[] etc to obtain higer throughput, lower response time and performance loss.
+
+REST acronym for **RE**presentational **S**tate **T**ransfer. It is an architectural style for **distributed hypermedia systems** and was first presented by Roy Fielding in 2000 in his famous dissertation[34]. When a client request is made via a RESTful API, it transfers a representation of the state of the resource to the requester. The request and response are made through HTTP. The request url specifies the resource, the HTTP method show the intention to the resources. The header and paremeters are also important as they contain identifier, authorization informations etc. The HTTP response retruned to requester contains the representation of resources in body and HTTP status code to show the result of request.  
+
 
 
 
@@ -136,7 +146,7 @@ Initial prototype design is based on the the contextual analysis, the ACD model 
 
 
 
-## **3 Services Design**
+## **3 Services Division**
 
 These part introduce the microservice design, including the database schema, service divison, and the interface design for service.
 
@@ -174,19 +184,31 @@ the database schema and use case of the the 3 services is shown below:
 
 
 
-**Define service interface**
 
-After we got the seperated services, we need to define how they will communitcate to external request, which is the interface of microservices. There are two popular solutions here, one is use Rpc (remote procedure call) and another is use RESTful API. A remote procedure call (RPC) is when a program causes a procedure to execute in a different physical address space, which is coded as if it were a local procedure call. Generally, the customed communication and serilization protocol were encapsulated in a framework like gRpc[] for user. 
 
-[] https://grpc.io/
+##  4 RESTful API Design
 
-Rpc often use the binary serilization protocol like protobuf[] etc to obtain higer throughput, lower response time and performance loss.
+After we got the seperated services, we need to define how they will communitcate to external request, which is the interface of microservices. Compared to Rpc, Restful use more standard and common communication protocol HTTP. And HTTP supports cross-language which is a good thing to the system because it can support more external requester implemented their system in different language and give more freedom to internal microservice to choose the most fitble language. So, consider the advantages of Restful and the implementation difficulties of Rpc, we decide to use Restful style api as the service interface in initial prototype. 
 
-REST acronym for **RE**presentational **S**tate **T**ransfer. It is an architectural style for **distributed hypermedia systems** and was first presented by Roy Fielding in 2000 in his famous dissertation[34]. When a client request is made via a RESTful API, it transfers a representation of the state of the resource to the requester. The request and response are made through HTTP. The request url specifies the resource, the HTTP method show the intention to the resources. The header and paremeters are also important as they contain identifier, authorization informations etc. The HTTP response retruned to requester contains the representation of resources in body and HTTP status code to show the result of request.  
+The core function of services layer is to provide service via exoposed API. So before the coding part, we need first design the RESTful API, this including identify resources, design url and assign HTTP method. Take User-service as an example, userservice interact with database User, Review and Payment, so we define these three table as three resources. Now when the object model is ready, it’s time to decide the resource URIs. At this step, focus on the relationship between services and its resources. These **resource URIs are endpoints for RESTful services**. So, if user want to do operation on User object, the uri he will request is shown below. The 8082 is the User-service's port.
 
-Compared to Rpc, Restful use more standard and common communication protocol HTTP. And HTTP supports 跨语言 cross-language which is a good thing to the system because it can support more external requester implemented their system in different language and give more freedom to internal microservice to choose the most fitble language.
+```java
+localhost:8082/USER-SERVICE/user
+```
 
-So, consider the advantages of Restful and the implementation difficulties of Rpc, we decide to use Restful style api as the service interface in initial prototype. The JSON was choosn to represent resources. Compared to another popular representation XML, they both have good readablity by humans and machines, but transform JSON to object is better supported in front-end because javascript has native method to do that. Also, JSON do a good job in data size and transportation speed than XML.
+Our resource URIs and their representation are fixed now. Let’s decide the possible operations in the application and map these operations on user resource URI. The client can request a user object when login and upload a new user to database when register. According the generally meaning of HTTP method, we assign GET and POST to these two operation. Also, we need to sepcify the parameters needed when client do request. For example , client need set their email and password in URI parameters when do GET user request. " Just like this:
+
+```java
+http://127.0.0.1:8081/user?email=jon%40foxmail.com&password=root
+```
+
+Generally, we assign GET method to request which want get a object, POST method to request which want to add a new object, PUT to those want update resources and DELETE to those delete resoureces, and the paremeters needed is depends on business requirement.
+
+Another aspect need to consider is the representation of the resources when commnication. The JSON was choosn to represent resources. Compared to another popular representation XML, they both have good readablity by humans and machines, but transform JSON to object is better supported in front-end because javascript has native method to do that. Also, JSON does a better job in data size and transportation speed than XML.
+
+
+
+
 
 
 
@@ -198,34 +220,11 @@ So, consider the advantages of Restful and the implementation difficulties of Rp
 
 
 
-
-
-
-
-   // sequence diagram
-
 based on the division of services, the sequence diagram is shown below:   ![sequence diagram](/Users/jon/Downloads/sequence diagram-2.png)
 
    
 
    Introduction of basic activities. **maybe one detailed part**
-
-// **data schema**   ！！ 数据库图放到这里   
-
-
-
-
-​		
-
-##   2 Architecture
-
-
-
-services layer: Actual service modules: provide actual services
-
-​						  Service management module: like service registry and discovery, service monitor
-
-database save data and cache, infrastructure use cloud server (goods ?)
 
 
 
@@ -233,7 +232,7 @@ database save data and cache, infrastructure use cloud server (goods ?)
 
 
 
-## **Platform and framework**
+## 5 **Platform, framework and architecture**
 
 To allow the scalability of the application, the back-end and front-end of the application will be separated. Due to the time constriant and learning cost of mobile app development, the chosen platform for application is Web. The backend consists of serveral standalone services and exposes RESTful APIs to communicates with external applications or internal services through HTTP requests. The front-end will consist of reusable UI componenent and scripts in line with user journey shown in figure x. In the future development, we can transform the front-end app to mobile devices in IOS or Android and same back-end API can be used.
 
@@ -253,9 +252,7 @@ Figure x outlines the architecture of the initial prototype. The arrows indicate
 
 The architecture of Front-end is basd on Vue's architecture. The reqeusts from front-end will first filtered by gateway layer, which responsible for authentication and routing service. Then the services in service layer handle the request, interact with database or other services and make response. 
 
- The services in service layser is divided to actual service modules including User, Order, Notification services, which serve external request, and service management module including services register, discovery center and admin service, which will communicate with other services to do moniter services' health info and maintain the status of each service instances. As development of the application progresses, services can also be added to the service layer. 
-
-The database layer consists of Mysql database and redis for future use. In the infrastructure layer, we choose deploy the application to cloud server to obtain 24/7 availablity.
+The services in service layser is divided to actual service modules including User, Order, Notification services, which serve external request, and service management module including services register, discovery center and admin service, which will communicate with other services to do moniter services' health info and maintain the status of each service instances. As development of the application progresses, services can also be added to the service layer. The database layer consists of Mysql database and redis for future use. In the infrastructure layer, we choose deploy the application to cloud server to obtain 24/7 availablity.
 
 
 
@@ -265,25 +262,134 @@ The database layer consists of Mysql database and redis for future use. In the i
 
 # Backend development
 
-！！ 加入测试过程？？
-
 
 
 ## 0 environment preperation
 
-Spring boot, spring cloud, mysql, mybatis.., maven, swagger, jwt
+The environment prepartion including the choose of development tools' version, the directory structure of project, the setting of parent maven pom.xml and the common dependenies used.
+
+To get all new features and the inefficient aspects of old framework, we chosed the newest Spring Boot 2.5.3 version and Spring Cloud 2020.3 version at the initial phase in Augest 2021. Then we created a parent Spring boot project called "bravotransport", and choose maven as dependency manager. The microservices will add into the parent as standalone sub-project, the file structure is shown below:
+
+```
+--bravotransport
+	-- userservice
+		-- controller
+		-- mapper
+		-- model
+		-- userapplicaion
+	-- orderservice
+	-- emailservice
+	-- eureka
+	-- admin
+	-- gateway
+	--pom.xml
+```
+
+Then we set the content of pom.xml of parent project, we will set some basic projec information (version of framework etc.) and some dependencies which used by all the child project, including Lombok (autogenerate getter and setter), Swagger (generate the API documentaion) and Service discovery denpendency - Eureka (as service register center) etc. 
+
+In this way, child pom can refer the parent POM using `parent` tag and specifying `groupId/artifactId/version` attributes. This pom file will inherit all properties and dependencies from parent POM and additionally can include extra sub-project specific dependencies as well.
 
 
 
-##  1 Services RESTful API Design
+## 1 ORM Framework inplementaion 
 
-The very first step in designing a REST API based application is – identifying the objects which will be presented as **resources**.
+In the proposed application, most requests would be the CURD opeartion to database and recieve result, so handling interaction between server to database is important. Basiclly, there are two ways communication to database in Java applicaiton. One way is use JDBC and another is use ORM framework.  JDBC is an interface provided by the package java.sql to query and update the database. When we use JDBC to access database, we need manully handle the lifcycle of connections, and it will cause the frequent connections and closes that make a waste to database recources. Also, JDBC need hard-code SQL sentence and attribute into java class, it will cause the poor maintainability.
 
-##### 		1.Identify Object Model
+ORMs are based on JDBC 'under the hood', they encapsulated all tedious work for us and make developer foucs on business logic. One main disadvantage comparison with JDBC is ORM framework have slow performance in case of large batch updates, so we will avoid these query in the business process.
 
-​	User, Payment, **Review**, token,Order, quote 
+To obtain the 易用性 and maintainability, the Object-Relational-Mapping framework was used. 
+
+The Spring Framework supports integration with Hibernate, Java Persistence API (JPA), Java Data Objects (JDO) and iBATIS SQL Maps for resource management, data access object (DAO) implementations, and transaction strategies []. 
+
+Why Mybatis
+
+Mybatis was chosen as the ORM framework integrated with Spring Boot.
+
+#### **Integration with Mybatis**
+
+User Order service as example, First we initiate a new Spring Boot project inside parent project bravotransport, and add mybatis dependency. Because we need connect Mysql database, the mysql-connector also need be added.
+
+```xml
+
+<dependency>
+  	<groupId>org.mybatis.spring.boot</groupId>
+		<artifactId>mybatis-spring-boot-starter</artifactId>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+</dependency>
+```
+
+
+
+The mybatis-spring-boot-starter is provided by mybatis develop tema for Spring Boot. 
+
+To communication with database, we only need 3 steps, firstly, write configuration information - the attributes of datasource into application.properties file. 
+
+```properties
+spring.datasource.driverClassName = com.mysql.jdbc.Driver
+spring.datasource.url = jdbc:mysql://localhost:3306/User?useUnicode=true&characterEncoding=utf-8
+spring.datasource.username = root
+spring.datasource.password = root
+```
+
+Secondly, create Mapper interface, the interface defines the method to communication with database, and declare the SQL sentence in the annotation of method. For example, the below code shows methods to get a user according email and insert a payment info to payment table. 
+
+b. create mapper
 
 ```java
+public interface UserMapper {
+    @Select("SELECT * FROM Users WHERE email = #{email} ")
+    User findUserByEmail(String email);
+
+    @Insert("INSERT INTO Payment (userId,recipient,sortcode,accountnumber) VALUES(#{userId}, #{recipient}, #{sortcode},#{accountnumber})")
+    void insertPayment(Payment payment);
+  ...
+}
+```
+
+Thirdly, tell the application where is the mapper interface. Add annotaion MapperScan in the start class of project, so mybatis will know where to find the mapper file. 
+
+```java
+@MapperScan("com.jon.api.user.mapper")
+public class UserApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(UserApplication.class, args);
+    }
+}
+```
+
+After the 3 steps, we can communication with database. In the controller class where we handle request, we can just declare the UserMapper type object in class and add the @Autowired annotation provided by Spring Boot. We don't need to concern the instantialse of UserMapper and when we invoke the methods of UserMapper, Mybatis will automaticly generate an instance for us to use. 
+
+The attribute "required" in @Autowired means if the bean is can be ignore if can't find it when autowire process, the default value is true. But the userMapper instance is generate by Mybatis when project running rather we craete it before, so there will be an "No beans of 'UserMapper' type found" error if the value is true.
+
+
+
+```java
+public class UserController {
+    @Autowired(required = false)
+    private UserMapper userMapper;
+    ...
+    public Boolean register(@RequestBody User user){
+        userMapper.insertUser(user);  // we can just use that
+        if(userMapper.findUserByEmail(user.getEmail()) != null){
+            return true;
+        }
+        return false;
+    }
+}
+```
+
+
+
+
+
+
+
+## 2  RESTful API Inplementation
+
+​	User, Payment, **Review**, token, Order, quote 
+
+```
 @ApiModel
 public class User {
     @ApiModelProperty(value = "The unique id of user")
@@ -303,137 +409,36 @@ public class User {
 
 
 
-##### 		2. Create Model URIs
-
-Now when the object model is ready, it’s time to decide the resource URIs. At this step, focus on the relationship between services and its resources. These **resource URIs are endpoints for RESTful services**. 
-
-```
-localhost:8082/USER-SERVICE/user
-localhost:8082/ORDER-SERVICE/order
-....
-```
 
 
+![截屏2021-07-21 18.04.58](file:///Users/jon/Library/Application%20Support/typora-user-images/%E6%88%AA%E5%B1%8F2021-07-21%2018.04.58.png?lastModify=1628573164)
 
-##### 		3. Determine Representations
+1. **Define Response object**
 
-​			JSON / XML , use json; json's advantages
+   Return **Response entity** to consumer
 
+   Extension of [`HttpEntity` that adds an ](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpEntity.html)[`HttpStatus` status code. Used in `RestTemplate` as well as in `@Controller` methods.](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpStatus.html)
 
+   [advantages: the field body contains the data model like user, order](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpStatus.html)
 
-##### 		4. Assign HTTP Methods 
+   [					the HttpStatus defined a lot of httpstatus code,  use specific status code to tell consumer the request's  result.](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpStatus.html)
 
-​		So our resource URIs and their representation are fixed now. Let’s decide the possible operations in the application and map these operations on resource URIs. A user of our network application can perform browse, create, update, or delete operations. assign them.  
+   [		](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpStatus.html)
 
-![截屏2021-07-21 18.04.58](/Users/jon/Library/Application Support/typora-user-images/截屏2021-07-21 18.04.58.png)
+   ```
+   public ResponseEntity(@Nullable T body,
+                         @NotNull org.springframework.http.HttpStatus status)
+     
+   
+   ```
 
-4. **Define Response object**
+   
 
-Return **Response entity** to consumer
+   [Use API docs to describe the api:](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpStatus.html)
 
-Extension of [`HttpEntity`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpEntity.html) that adds an [`HttpStatus`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpStatus.html) status code. Used in `RestTemplate` as well as in `@Controller` methods.
+   [![截屏2021-07-21 18.06.03](file:///Users/jon/Library/Application%20Support/typora-user-images/%E6%88%AA%E5%B1%8F2021-07-21%2018.06.03.png?lastModify=1628573164)](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpStatus.html)
 
-advantages: the field body contains the data model like user, order
-
-​					the HttpStatus defined a lot of httpstatus code,  use specific status code to tell consumer the request's  result.
-
-​		
-
-```java
-public ResponseEntity(@Nullable T body,
-                      @NotNull org.springframework.http.HttpStatus status)
-  
-
-```
-
-
-
-Use API docs to describe the api:
-
-![截屏2021-07-21 18.06.03](/Users/jon/Library/Application Support/typora-user-images/截屏2021-07-21 18.06.03.png)
-
-
-
-## 2 ORM 
-
-#### 1 create data table in **mysql**
-
-
-
-
-
-
-
-#### 2 **Integration Mybatis**	
-
-spring-boot-start-mybatis
-
-```xml
-<groupId>org.mybatis.spring.boot</groupId>
-<artifactId>mybatis-spring-boot-starter</artifactId>
-```
-
-why: 
-
-a. configuration 
-
-```properties
-spring.datasource.driverClassName = com.mysql.jdbc.Driver
-spring.datasource.url = jdbc:mysql://localhost:3306/User?useUnicode=true&characterEncoding=utf-8
-spring.datasource.username = root
-spring.datasource.password = 1251251258
-```
-
-b. create mapper
-
-```java
-public interface UserMapper {
-
-    @Select("SELECT * FROM Users WHERE name = #{name} ")
-    // 对应作用，当 类字段 和 数据库表字段不一致时
-    @Results({
-            @Result(property = "name", column = "name"),
-            @Result(property = "password", column = "password")
-    })
-    User findUserByName(String name);
-
-    @Select("SELECT * FROM Users WHERE email = #{email} ")
-    User findUserByEmail(String email);
-
-    @Select("SELECT * FROM Payment WHERE userId = #{userId} ")
-    Payment getPaymentById(String userId);
-
-    @Insert("INSERT INTO Payment (userId,recipient,sortcode,accountnumber) VALUES(#{userId}, #{recipient}, #{sortcode},#{accountnumber})")
-    void insertPayment(Payment payment);
-```
-
-**Autowired in controller** and add annotation in UserApplication class to tell the positon of mapper.
-
-```java
-@MapperScan("com.jon.api.user.mapper")
-public class UserApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(UserApplication.class, args);
-    }
-}
-
-```
-
-
-
-```java
-public class LoginController {
-    @Autowired(required = false)
-    private UserMapper userMapper;
-    ...
-      
-      
-}
-```
-
-
-
-
+   
 
 
 
@@ -601,8 +606,6 @@ axios.post('http://localhost:8090/USER-SERVICE/user', this.form)
 
 ## 2 Home page and common part (layout...)
 
-在登陆后，紧接着的就是home页面，这也是支持用户后续操作的所有地方。页面采用 Aside，header，main 的布局；aside 作为侧边菜单栏，提供了用户活动的入口。header显示用户相关信息，main的空间用来显示当前的活动页面，例如发布订单，查看订单信息等; main中显示的 component 包含 vue的  '' :is ''标签，这样我们在引入各个活动的 vue component 后可以把 currentView 的值改变为其他模块的名字来更换显示内容。
-
 After logging in, the home page is immediately followed, which is also the place to support all subsequent activities of the user.
 The page adopts the layout of Aside, header, and main; aside serves as the side menu bar and provides the entrance to user activities. The header displays user-related information, and the main space is used to display the current active page, such as posting orders, viewing order information, etc. The component displayed in the main contains the '' **:is** '' tag of Vue, so that after impoting the Vue component of each activity, we can change the value of currentView to the name of other modules to replace the displayed content.
 
@@ -677,15 +680,11 @@ After setting attribute `data` of `el-table` with an object array, we used `prop
 
 ![截屏2021-08-03 11.45.58](/Users/jon/Library/Application Support/typora-user-images/截屏2021-08-03 11.45.58.png)
 
-
-
-
-
 make review: 
 
 Using the el-rate label, the stars at the top of the dialog box represent scores, each star represents one point, and the bottom is a comment input box. These two parameters are respectively bound to the value and review variables in the component. After the user clicks submit, it will be sent to the backend.
 
-![截屏2021-08-04 14.23.01](/Users/jon/Library/Application Support/typora-user-images/截屏2021-08-04 14.23.01.png)
+<img src="/Users/jon/Library/Application Support/typora-user-images/截屏2021-08-04 14.23.01.png" alt="截屏2021-08-04 14.23.01" style="zoom:33%;" />
 
 
 
@@ -695,9 +694,7 @@ Using the el-rate label, the stars at the top of the dialog box represent scores
 
 The market page is the driver's unique interface, which displays all the orders placed by users on the market and the operations that can be performed.
 
-![截屏2021-08-04 13.13.35](/Users/jon/Desktop/截屏2021-08-04 13.13.35.png)
-
-司机对于每个订单的操作有 3 种，分别是 More - 查看更多的具体信息，Quotes - 查看历史 quotes 并给订单 quote，Route - 显示路线，里程和耗时。我们在页面中创建3 个可隐藏的 dialog 模块来容纳 这三个部分的展示，并且维护当前订单信息，司机的quote，以及控制 dialog 显示的 3 个 boolean 变量。借助 <el-dialog>  的  **:visible.sync** 属性，我们给他可以绑定布尔值，这样就可以通过改变布尔值的来控制dialog 的 显示与否。
+<img src="/Users/jon/Desktop/截屏2021-08-04 13.13.35.png" alt="截屏2021-08-04 13.13.35" style="zoom:33%;" />
 
 There are 3 types of driver operations for each order, namely More (see more specific information), Quotes (view historical quotes and quote the order), Route (display route, mileage and time). We create three concealable dialog modules on the page to accommodate the display of these three parts, and also maintains the current order information, the driver's quote, and the three boolean variables that control the dialog display. With the help of the **:visible.sync** property of <el-dialog>, we can control the display of the dialog by changing the Boolean variable bound to it.
 
@@ -716,8 +713,6 @@ There are 3 types of driver operations for each order, namely More (see more spe
 
 
 
-在订单信息到获取方面，向后端请求市场订单信息被封装到 Vue 方法 beforeCreate（）里面，这样，在模块显示前，我们就可以把获取到的 Order array 传入 本页面所定义的数据 orderdata。
-
 In terms of obtaining order information, the request for market order information from the backend is encapsulated in the Vue method beforeCreate(), so that before the module is displayed, we can pass the obtained Order array into the data Orderdata defined on this page.
 
 
@@ -726,9 +721,7 @@ The implementation of the three operations of the order is as follows. The first
 
 <img src="/Users/jon/Desktop/截屏2021-08-04 12.41.14.png" alt="截屏2021-08-04 12.41.14" style="zoom:33%;" />
 
-其次是quotes模块；用户单击 Quotes 时，quote dialog 模块就会显示，该模块由一个 quote表和 下方的一个输入框组成，输入框的 v-model 属性与 market Component's quote变量绑定，司机可以输入他心中的quote，并点击 submit 来提交（单击后 axios 带着司机id和价格给后端发送请求）。
 
-在实现的过程中, 首先创建 market 的子模块 quote component 并引入，父模块 market 会将当前行的 orderId 通过 quote component 的 porp传入 quote component，quote component 会借助这个id 向后台请求这个 orderId 所有的quote信息，最终显示信息。
 
 The second is the Quotes module; when the user clicks Quotes, the quote dialog will be displayed. It consists of a quote table and an input box below. The **v-model** attribute of the input box is bound to the Market Component's variable quote, and the driver can input price in his mind and click confirm button to submit (after clicking, Axios sends a request to the backend with the driver id, orderid and price). In the process of implementation, first create and import the sub-module quote component of the market. The parent module market will pass the orderId of the current line to the quote component through the **porp** attribute of the quote component, and the quote component will use this id to request all the quotes of this orderId from the backend Information, and finally display information on the dialog.
 
@@ -737,8 +730,6 @@ The second is the Quotes module; when the user clicks Quotes, the quote dialog w
 <img src="/Users/jon/Library/Application Support/typora-user-images/截屏2021-08-04 10.50.13.png" alt="截屏2021-08-04 10.50.13" style="zoom:33%;" />
 
 
-
-最后是路线信息的显示，司机可以查看 google map下的线路规划，长度和预计时常。本部分的实现借助了第三方插件 vue2-googlemap ，在它之上，本项目开发了可以在地图上展示两点间路线的自定义的 DirectionsRenderer 模块，该模块首先获取到谷歌提供的 DirectionsService() 对象，接着携带之前申请到的谷歌开发者key以及地点和交通模式（总是设置为开车）信息请求路线信息。接着，从该路线信息中获取到第一个可选线路的距离，时间，以key-value的形式存储到 localStorage中供market 模块使用。最后借助提供 vue2-google-maps 的 setDirections() 函数绘制路线。
 
 The last is the display of route information. Drivers can check the route plan, length and estimated time under the google map. The implementation of this part uses the third-party service vue2-google-map. On this basis, this project has developed a custom DirectionsRenderer module that can display the route between two points on the map. This module first obtains the DirectionsService() object provided by Google , and then carry the Google developer key previously applied for and the location and traffic mode (always set to DRIVING) information to request route information. Then, parse out the distance and duration of the first optional route, and store it in the localStorage in the form of key-value for the Market component to use. Finally, draw the route with the help of the setDirections() function provided by vue2-google-maps.
 
@@ -764,23 +755,13 @@ However, this pattern also has an obvious disadvantage. That is, there is no iso
 
 
 
-
-
-
-
 这样一来，我们直接传输每个服务打包好的的jar文件到云主机对后端服务器进行部署，将vue项目build好后，  将本地数据库的sql文件传到云主机。
 
 
 
 
 
-
-
-
-
 [40] https://docs.spring.io/spring-boot/docs/current/reference/html/deployment.html#deployment.cloud
-
-
 
 
 
