@@ -1,4 +1,4 @@
-#  <uBackground</u>
+#  Background
 
    ！！target user and market 可以留到 introduction ？
 
@@ -114,96 +114,81 @@ Firstly, microservices interact with each other through REST and RPC, which make
 
  ##  1 Methodology 
 
-​       1.Design the business process (by myself, including the features discussing before)  -> develop the front and back end -> have some test  ( **unit test** (test individual services, do some pressure test,  maybe write some scripts ), **integrated test** (do some user test,  mock process (mock address and virtual driver, collect the thoughts of users during the process)  -> update app with some new features and accomplish a robust backend -> (do evaluation -> future work )   <u>minimal -> advanced</u>**<u>some software dev method reference</u>**
+The chosen of methodology of this project draws on the software development theory of ACD[]. One of the core ideas in ACD is "release early and often". For this reason, we applied an iterative development method. 
 
-从 minimal -》 advanced 迭代过程，一些 软件开发方法？
+In the Initial minimal prototype, the implementation of core activities and the design of the micorservices architecture are mainly carried out.
+
+Due to the urgency of time and the difficulty of implementation, the business design of initial prototype is based on informal discussions between myself and some others major in transportation and my understanding of other similar products in the background. To achieve the backend server's high performance requested by the objectives, we compared the MA and microservices and chose to design the system based on microservices architectural style.
+
+After the initial prototype is deployed in the cloud, the software testing phase starts, which includes pressure testing (/unit testing) and user-based integration testing. First, perform a pressure test to test the correctness of the system in simulated real scenarios and find the weak points in the system. After the unit test, some peoples will use the application, while part of process was mocked due to covid-19. Then we will iterate the business process and server implementation based on these collecting feedbacks.
+
+The final iteration aims to make a advanced prototype and will focus on the improvement and enhancement of the security, availability and reliability of the back-end server to achieve a system close to the production level.
 
 
 
  ## 2 Design
 
-   // use case diagram
+Initial prototype design is based on the the contextual analysis, the ACD model discussed in the previous Section and informal discussions with several students major in transportation. The following core activities was defined: for the clients, 1) publish order in platform, reviece the quotes from driver and accept the quote, 2) check the driver's review and make review after service; for driver, 3) check the order market and access the details of order 4) give quote to sepecific order; also, 5) clients and drivers will get notification when order status been updated. The use case diagram is shown below:
 
-要解释这些图怎么用的
-
-   ![截屏2021-07-14 15.53.46](/Users/jon/Library/Application Support/typora-user-images/截屏2021-07-14 15.53.46.png)
-
-   
-
-   // sequence diagram
-
-   ![sequence diagram](/Users/jon/Downloads/sequence diagram-2.png)
-
-   
-
-   Introduction of basic activities. **maybe one detailed part**
-
-// **data schema**   ！！ 数据库图放到这里
-
- // user journey
-
-   ![截屏2021-07-22 15.10.53](/Users/jon/Library/Application Support/typora-user-images/截屏2021-07-22 15.10.53.png)
-
-
-
-
-​		
-
-##   2 Architecture
-
-
-
-![ds](/Users/jon/Downloads/Architecture.png)
-
-
-
-Component, layered design:
-
-Fronted-end: brief intro
-
-back-end: 
-
-Interface layer: gateway accept the request, routing, authentication, ...
-
-services layer: Actual service modules: provide actual services
-
-​						  Service management module: like service registry and discovery, service monitor
-
-database save data and cache, infrastructure use cloud server (goods ?)
+   <img src="/Users/jon/Library/Application Support/typora-user-images/截屏2021-07-14 15.53.46.png" alt="截屏2021-07-14 15.53.46" style="zoom:33%;" />
 
 
 
 
 
-## **3 Services layer design**
+## **3 Services Design**
 
-**a. Services Component division** 
+These part introduce the microservice design, including the database schema, service divison, and the interface design for service.
 
-objective: individual microservice feature, less-coupled, minimise invoke other services. 
+**Services Component division** 
 
-based on the request to the **database** and the request info's category, and **service granularity**
+For the microservices architectural, the divison of services is important, **service granularity**，if single service is too big, 大小的影响。
 
-we first divide out 3 services, in the after process if the service too big , we make it samller.
+The objective of services division including less-coupled, minimise invoke other services etc. Dividing servics based on the interaction with databse is a good way to divide services, each services has its own database and only interact with these database. This division method ensures the isolation of each services. 
 
-**User service**: get user's info, get request token, look and make reviews, => Users table, Review table, payment table
+Five tables was designed to support the applicaiton, they are: 
 
-**Order Service**: publish, check, fetch, cancel order, gvie quote to specific order => Order table, Quote table
+1) **Order table**: the information about the sepecific order, including driverId, clientId, place and cargo details, etc. Order table is responsible for the request when client publish new order, driver check orders in market, and they update the order status. 值得一提的点，the status of the order is defined in 4 stages - PUBLISHED (once client submit the order request) , FETCHED (after the client accept a driver's quote), PAID (client made the payment to driver), TRANSPORTED (driver completed the service).
+2) **Quote table**: including the price, the orderId, driverId and the createdata, the createdata the default value is set to the currenttime by dabase, so we don't need to set this attribute in server. The table is responsible to drivers  make quote and see the quotes of orders.
+3) **User table**: store the data of user, including the email, password, telephont etc, responsible for the request of authenication, register and email info when send notifications.
+4) **Review table**: store review information about orders, include the comments, star given by clients, and the orderId, clientId to identify user and order. The star is a number out of 5 represented the satisfy content with driver's service.
+5) **Payment table**: store driver's payment info, including card details for clients to make payment. The table is responsible for the response the request by client.
 
-**Notification Service**: send email with different content ( order status update，new quote, registry 
+To reduce the constriant of other table when do CURD operation in single table, we will not set the external key between the tables. 
+
+Based on the activity category and the interaction with database, we first divide out 3 services and assign these 5 tables to them. If we found the services are too big or small, we will make adjustment in later development.
+
+These service and their function:
+
+**User service**: login and register, make reviews, get payment info, get users' email,  the service will interact with Users table, Review table, Payment table.
+
+**Order Service**: publish, check, fetch order, update order status, make and check quotes, the service will interact with Order table, Quote table.
+
+**Notification Service**: send email with different content (order status update, new quote, registry etc), it will request the order and user info to user service and order service.
+
+the database schema and use case of the the 3 services is shown below:
+
+<img src="/Users/jon/Library/Application Support/typora-user-images/截屏2021-07-21 18.17.32.png" alt="截屏2021-07-21 18.17.32" style="zoom:30%;" />
+
+<img src="/Users/jon/Desktop/截屏2021-08-09 17.48.12.png" alt="截屏2021-08-09 17.48.12" style="zoom:30%;" />
 
 
 
-**b. Define service interface**
+**Define service interface**
 
-​		**use RESTful API**,  
+After we got the seperated services, we need to define how they will communitcate to external request, which is the interface of microservices. There are two popular solutions here, one is use Rpc (remote procedure call) and another is use RESTful API. A remote procedure call (RPC) is when a program causes a procedure to execute in a different physical address space, which is coded as if it were a local procedure call. Generally, the customed communication and serilization protocol were encapsulated in a framework like gRpc[] for user. 
 
-Acronym for **RE**presentational **S**tate **T**ransfer. It is architectural style for **distributed hypermedia systems** and was first presented by Roy Fielding in 2000 in his famous dissertation[34].
+[] https://grpc.io/
 
-Principles, pros, cons	
+Rpc often use the binary serilization protocol like protobuf[] etc to obtain higer throughput, lower response time and performance loss.
 
-		1. **Stateless** (use HTTP)
-		3. http state code: readable
-		4. use URI and request method to describe intentation
+REST acronym for **RE**presentational **S**tate **T**ransfer. It is an architectural style for **distributed hypermedia systems** and was first presented by Roy Fielding in 2000 in his famous dissertation[34]. When a client request is made via a RESTful API, it transfers a representation of the state of the resource to the requester. The request and response are made through HTTP. The request url specifies the resource, the HTTP method show the intention to the resources. The header and paremeters are also important as they contain identifier, authorization informations etc. The HTTP response retruned to requester contains the representation of resources in body and HTTP status code to show the result of request.  
+
+Compared to Rpc, Restful use more standard and common communication protocol HTTP. And HTTP supports 跨语言 cross-language which is a good thing to the system because it can support more external requester implemented their system in different language and give more freedom to internal microservice to choose the most fitble language.
+
+So, consider the advantages of Restful and the implementation difficulties of Rpc, we decide to use Restful style api as the service interface in initial prototype. The JSON was choosn to represent resources. Compared to another popular representation XML, they both have good readablity by humans and machines, but transform JSON to object is better supported in front-end because javascript has native method to do that. Also, JSON do a good job in data size and transportation speed than XML.
+
+
 
 
 
@@ -215,39 +200,66 @@ Principles, pros, cons
 
 
 
-**First** step: develop the **core activities**
-
-1) client can publish the transportation order and cancel order
-2) driver can check the details of the order and fetch order
-3) client and dirver can  get notification  in time when order status changed.
-
-**Second** step: add advanced process (security, ) in project, and make the process robust and solid, fix bug;
-
-**Finally**: do some user test and imporve the project.
 
 
+   // sequence diagram
 
+based on the division of services, the sequence diagram is shown below:   ![sequence diagram](/Users/jon/Downloads/sequence diagram-2.png)
 
+   
 
-## **Platform , framework**
+   Introduction of basic activities. **maybe one detailed part**
 
-**Platform**: with the advantages of RESTful api, the application can easily deploy in web or mobile devices.
-
-first we deploy the app at web (easily, have a try), when the app is good enough in the future, then develop the mobile app in IOS or Android.
-
-**Framework** and Language: 
-
-front-end : Vue, (js, html, css)
-
-back-end: Spring Boot, Spring Cloud:  intro, fitness to microservices, good community. (java)
-
-
-
-ApacheBench 作为压力测试工具
+// **data schema**   ！！ 数据库图放到这里   
 
 
 
 
+​		
+
+##   2 Architecture
+
+
+
+services layer: Actual service modules: provide actual services
+
+​						  Service management module: like service registry and discovery, service monitor
+
+database save data and cache, infrastructure use cloud server (goods ?)
+
+
+
+![截屏2021-07-22 15.10.53](/Users/jon/Library/Application Support/typora-user-images/截屏2021-07-22 15.10.53.png)
+
+
+
+## **Platform and framework**
+
+To allow the scalability of the application, the back-end and front-end of the application will be separated. Due to the time constriant and learning cost of mobile app development, the chosen platform for application is Web. The backend consists of serveral standalone services and exposes RESTful APIs to communicates with external applications or internal services through HTTP requests. The front-end will consist of reusable UI componenent and scripts in line with user journey shown in figure x. In the future development, we can transform the front-end app to mobile devices in IOS or Android and same back-end API can be used.
+
+
+
+The front-end development used framework VueJS. As a lightweight  front-end development framework, it has some advantages like simplicity, user-friendly, few restrictions and good documentation[] compared to other frameworks like Anguar and React.
+
+[] https://towardsdatascience.com/what-are-the-pros-and-cons-of-using-vue-js-3689d00d87b0
+
+The framework Spring Boot was chosen in back-end development. Spring Boot is an open-source micro framework maintained by Pivotal, it has lot of advantages including help developers autoconfigure all components for a production-grade Spring application, provide sa default setup for unit and integretation tests, add many plugins that can be used to easily connect with database and middle-tier services[]. It also have good supports for microservice application and Restful api develpoment. However, spring boot often installs many extra dependencies, the deployment binary size can become very large and the complicated dependencies mangement brings some burden.
+
+[] https://stackify.com/what-is-spring-boot/
+
+
+
+Figure x outlines the architecture of the initial prototype. The arrows indicate the communication flow between different components. The box  represented the scope component, each component will only communicate with components in either its own layer or the layer directly adjacent to it. 
+
+The architecture of Front-end is basd on Vue's architecture. The reqeusts from front-end will first filtered by gateway layer, which responsible for authentication and routing service. Then the services in service layer handle the request, interact with database or other services and make response. 
+
+ The services in service layser is divided to actual service modules including User, Order, Notification services, which serve external request, and service management module including services register, discovery center and admin service, which will communicate with other services to do moniter services' health info and maintain the status of each service instances. As development of the application progresses, services can also be added to the service layer. 
+
+The database layer consists of Mysql database and redis for future use. In the infrastructure layer, we choose deploy the application to cloud server to obtain 24/7 availablity.
+
+
+
+![ds](/Users/jon/Downloads/Architecture.png)
 
 
 
@@ -346,7 +358,7 @@ Use API docs to describe the api:
 
 #### 1 create data table in **mysql**
 
-![截屏2021-07-21 18.17.32](/Users/jon/Library/Application Support/typora-user-images/截屏2021-07-21 18.17.32.png)
+
 
 
 
@@ -740,21 +752,29 @@ The last is the display of route information. Drivers can check the route plan, 
 
 ## Deployment
 
-后端由 MySQL 数据库支持的 Spring Boot 应用程序。对于本项目，向云端部署主要有两个方案，
+For this project, there are two main solutions for deploying to the cloud. One is the ecs cloud server (IaaS) that needs to manually configure the application but has a higher degree of freedom, and the other is to choose the (PaaS) platform as a service provider that is responsible for all the details of the infrastructure.
 
-一种是需要自行手动配置应用但是自由度更高的 ecs 云服务器（IaaS），另外一种则是选择负责所有细节基础设施的平台即服务 (PaaS) 提供商。
-
-Because Spring Boot’s executable jars are ready-made for most popular cloud PaaS (Platform-as-a-Service) providers 和本项目的时间限制，paas 被选择以便专注于开发应用程序，而不必担心配置和维护服务器。
+Choosing PaaS can focus on developing applications without worrying about configuring and maintaining servers. With the support of PaaS service providers, a single application can be deployed easily, but for a microservice project with multiple independent sub-projects, deployment is more time-consuming. And the front-end server and database may also choose other different service providers for deployment, the communication between them and the back-end server is also a problem.
 
 
 
-对于 springboot项目来说，目前的大型 PaaS 提供商包括 Amazon Web Services, Google Cloud  和 Heroku [19]， Cloud Foundry等。对于 Heroku and Cloud Foundry 来说，很优秀的一点是他们 employ a pluggable “buildpack” approach. The buildpack wraps deployed code in whatever is needed to *start* the application.[40]。对上述服务商经过使用价格，可用性方面的比较，本项目决定部署到 heroku，
+In the end, we chose the cloud server of IaaS Google Cloud Platform for deployment, and obtained a Linux host running 4G of memory through the trial plan. For deployment, we adopted Multiple Service Instances per Host Pattern. Its advantage is that resource usage is relatively efficient, and multiple service instances share the server and its operating system. Deploying service instances is relatively fast. Just copy the service to the host and start it. Since our service is written in Java, we only need to copy the JAR, and we can package a single service into multiple Jar packages to achieve multiple instances.
+
+However, this pattern also has an obvious disadvantage. That is, there is no isolation between service instances. Although we can accurately monitor the resource utilization of each service instance, we cannot limit the resources used by each instance. A misbehaving service instance may consume all the memory or CPU of the host.
 
 
 
-Heroku 提供了简单易用的 CLI 工具来部署应用程序 和 多个运行时（称为 Dynos）来运行各种编程语言的应用程序。并且，部署到 Heroku 只需将源代码推送到 Heroku 的 GIT 远程。这也使未来的更新部署变得非常容易。
 
-下一步需要让应用程序与数据库通信。 Heroku 提供了一个托管的 ClearSQL 平台，可以轻松地与 Dynos 集成。
+
+
+
+这样一来，我们直接传输每个服务打包好的的jar文件到云主机对后端服务器进行部署，将vue项目build好后，  将本地数据库的sql文件传到云主机。
+
+
+
+
+
+
 
 
 
