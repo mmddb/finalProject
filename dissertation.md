@@ -319,8 +319,6 @@ User Order service as example, First we initiate a new Spring Boot project insid
 </dependency>
 ```
 
-
-
 The mybatis-spring-boot-starter is provided by mybatis develop tema for Spring Boot. 
 
 To communication with database, we only need 3 steps, firstly, write configuration information - the attributes of datasource into application.properties file. 
@@ -332,9 +330,7 @@ spring.datasource.username = root
 spring.datasource.password = root
 ```
 
-Secondly, create Mapper interface, the interface defines the method to communication with database, and declare the SQL sentence in the annotation of method. For example, the below code shows methods to get a user according email and insert a payment info to payment table. 
-
-b. create mapper
+Secondly, create resource models and create Mapper interface. We need create the data models of resources to hold the relational data comes from database, for User services, we created User, Payment, Review data type. The interface defines the method to communication with database, and declare the SQL sentence in the annotation of method. For example, the below code shows methods to get a user according email and insert a payment info to payment table. Some of the mapper method is shown below:
 
 ```java
 public interface UserMapper {
@@ -358,19 +354,18 @@ public class UserApplication {
 }
 ```
 
-After the 3 steps, we can communication with database. In the controller class where we handle request, we can just declare the UserMapper type object in class and add the @Autowired annotation provided by Spring Boot. We don't need to concern the instantialse of UserMapper and when we invoke the methods of UserMapper, Mybatis will automaticly generate an instance for us to use. 
+After the 3 steps, we can communication with database. In the controller class where we handle request, we can just declare the UserMapper type object in class and add the @Autowired annotation provided by Spring Boot. We don't need to concern the instantialise of UserMapper and when we invoke the methods of UserMapper, Mybatis will automaticly generate an instance for us. 
 
-The attribute "required" in @Autowired means if the bean is can be ignore if can't find it when autowire process, the default value is true. But the userMapper instance is generate by Mybatis when project running rather we craete it before, so there will be an "No beans of 'UserMapper' type found" error if the value is true.
-
-
+The attribute "required" in @Autowired means if the wire can be ignored if can't find the bean at the begining, the default value is true. But the userMapper instance is generate by Mybatis when project running rather we crreate it before, so there will be an "No beans of 'UserMapper' type found" error if the value is true. The example is shown below:
 
 ```java
 public class UserController {
     @Autowired(required = false)
     private UserMapper userMapper;
     ...
+    // 
     public Boolean register(@RequestBody User user){
-        userMapper.insertUser(user);  // we can just use that
+        userMapper.insertUser(user);  // we can just use the userMapper
         if(userMapper.findUserByEmail(user.getEmail()) != null){
             return true;
         }
@@ -383,130 +378,187 @@ public class UserController {
 
 
 
-
-
 ## 2  RESTful API Inplementation
 
-​	User, Payment, **Review**, token, Order, quote 
+After set the interaction of database, we can implement the APIs based on the API design discussed in previous section. Take the convinenience of Spring Boot, we can easily configure class and method use annotation. In the API inplementation part, we will develop the controller class in User, Order, Email microservices to handle request and use Swagger plugin to generate an useful API documentation for services in web.
+
+The development of these controllers basically is adding annotation to class and methods. In the controller level, we added @RestController, @CrossOrign etc.
+
+Spring 4.0 introduced the *@RestController* annotation in order to simplify the creation of RESTful web services. It will tell Spring that every request handling method of the controller class automatically serializes return objects into ***HttpResponse***. **It's a convenient annotation that combines @Controller and @ResponseBody**[].
+
+[] https://www.baeldung.com/spring-controller-vs-restcontroller
+
+For security reasons, browsers prohibit AJAX calls to resources outside the current origin[]. Cross-Origin Resource Sharing (CORS) is a W3C specification[1] implemented by most browser that lets user specify what kind of cross-domain requests are authorized [2]. By the @CrossOrigin provided by Spring, we can configure it in our application. We can customize the configuration by specifying the value of the annotation attributes: *origins*, *methods*, *allowedHeaders*, *exposedHeaders*, *allowCredentials* etc. At the initial prototype application, we just focused on the core activities and leave it to default value. We added the annotation on the class level and all methods in the class have it enabled to allow request from all origins.
+
+[1] https://www.w3.org/TR/cors/
+
+[2] https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-cors
+
+Also, in the method level, we need add annotations to mapper the request to methods. We will use @GetMapping, @PostMapping, @PutMapping and @DeleteMapping and specify the request url in its attribute . For example, @GetMapping(value = "/user") will mapping HTTP `GET` requests `http://localhost:8081/user` onto specific handler methods.
+
+The last thing is define the return object. We use Java object **Response entity** to hold the information return to consumer. A ResponseEntity consists of a body and http status, which is just satsified our requirements. The status is a Enum object, it has a lot of value like OK(200), CREATED(201), NO_CONTENT(204). We can put the resoureces object to the body and set the status code to suggest the request status and Spring will construct the HTTP response based on the ResponseEntity we returned. 
+
+
+
+Along with the API development, to make a good explanation for the API consumers and test the api's functionality easily, the api doc generator Swagger was used. Swagger will scan the clsss's annotations and retrieve the attributes, then make docs available in specific port. In the web pages, we easily test the apis by input the parameters and check the return values. We set the @Api, @ApiModel, @ApiModelProperty to the class, and many annotations to the methods to explain the resources model and api details including the parameters, responses, notes etc.
+
+The code below shows an example of a method:
+
+```java
+ @GetMapping("/order")
+    @ApiOperation(value = "Get orders of specific user", notes = "userType = 'CLIENT' || 'DRIVER'")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Query successfully", response = ResponseEntity.class),
+            @ApiResponse(code = 406, message = "User type not acceptable", response = ResponseEntity.class),
+            @ApiResponse(code = 204, message = "No Content", response = ResponseEntity.class)
+    })
+    public ResponseEntity getOrders(String userType, String userId){
+        List<Order> orders;
+        if("CLIENT".equals(userType)) {
+            orders = orderMapper.selectByClientId(userId);
+        }else if("DRIVER".equals(userType)){
+            orders = orderMapper.selectByDriverId(userId);
+        }else{
+            return new ResponseEntity(null, HttpStatus.NOT_ACCEPTABLE);
+        }
+        if(orders.size() == 0){
+            return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity(orders, HttpStatus.OK);
+    }
 
 ```
-@ApiModel
-public class User {
-    @ApiModelProperty(value = "The unique id of user")
-    String id;
-    @ApiModelProperty(value = "The name of user")
-    String name;
-    @ApiModelProperty(value = "The unique email of user", required = true)
-    String email;
-    @ApiModelProperty(value = "The telephone of user")
-    String telephone;
-    @ApiModelProperty(value = "The password of user", required = true)
-    String password;
-    @ApiModelProperty(value = "The type of user (CLIENT or DRIVER)", required = true)
-    String type;
-}
-```
+
+The figures below show the overview API documentation of Order services and a API's details.
+
+![截屏2021-08-11 10.47.10](/Users/jon/Library/Application Support/typora-user-images/截屏2021-08-11 10.47.10.png)
+
+
+
+[<img src="file:///Users/jon/Library/Application%20Support/typora-user-images/%E6%88%AA%E5%B1%8F2021-07-21%2018.06.03.png?lastModify=1628573164" alt="截屏2021-07-21 18.06.03" style="zoom:33%;" />](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpStatus.html)
 
 
 
 
 
-![截屏2021-07-21 18.04.58](file:///Users/jon/Library/Application%20Support/typora-user-images/%E6%88%AA%E5%B1%8F2021-07-21%2018.04.58.png?lastModify=1628573164)
+## 3 Service Registration and Discovery
 
-1. **Define Response object**
+Generally, each services in the system is standalone instances, the number of instances, the running port, and health information in specifc services is changing all the time. So the service registry center helps services know the status of other services and they can use these infos to adjust their request strategy. 
 
-   Return **Response entity** to consumer
+For the services, their instances will register themselves with the registry center on startup and deregistered on shutdown. Other services will query the registry center to find the available instances of a service, this is the discovery process. The registry center maintain a registry table which contains the basic infos of instances registered and may invoke a service instance’s health check API to verify that it is able to handle requests[]. 
 
-   Extension of [`HttpEntity` that adds an ](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpEntity.html)[`HttpStatus` status code. Used in `RestTemplate` as well as in `@Controller` methods.](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpStatus.html)
+To implement the registry center, the popular solution Eureka was used. Eureka is a REST based service for locating services and for the purpose of load balancing and failover of middle-tier servers. We call this service, the **Eureka Server**. Eureka also comes with a Java-based client component, the **Eureka Client**, which makes interactions with the service much easier[]. Like the figure below, the Eureka is inside the each service and get registry form Eureka server, then make remote call to other services. To get a high availability, Eureka can set serveral replicas to avoid single point of failure.
 
-   [advantages: the field body contains the data model like user, order](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpStatus.html)
+[] https://github.com/Netflix/eureka/wiki/Eureka-at-a-glance
 
-   [					the HttpStatus defined a lot of httpstatus code,  use specific status code to tell consumer the request's  result.](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpStatus.html)
+<img src="/Users/jon/Library/Application Support/typora-user-images/截屏2021-08-11 11.22.00.png" alt="截屏2021-08-11 11.22.00" style="zoom: 50%;" />
 
-   [		](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpStatus.html)
+To set the Eureka server and client, we need to add eureka-server dependency to the Eureka project and eureka-client dependency to other services, set a few Eureka configuration attributes in applicantion.properties, and add annotation @EnableEurekaServer and @EnableEurekaClient respectively. 
 
-   ```
-   public ResponseEntity(@Nullable T body,
-                         @NotNull org.springframework.http.HttpStatus status)
-     
-   
-   ```
+ evicting the stale instances // 驱逐服务
 
-   
-
-   [Use API docs to describe the api:](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpStatus.html)
-
-   [![截屏2021-07-21 18.06.03](file:///Users/jon/Library/Application%20Support/typora-user-images/%E6%88%AA%E5%B1%8F2021-07-21%2018.06.03.png?lastModify=1628573164)](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/HttpStatus.html)
-
-   
-
-
-
-## 3. Service Registration and Discovery
-
-Eureka ?? goods, comparation to others
-
-importance: **service aggregation**; monitor the health of service; load balance;  
-
-#### Eureka server impl
-
-#### Eureka client imp
+Eureka server expects heartbeats from the client at specific intervals and counts whether the heartbeat failure rate is less than 85% within 15 minutes. If it is, Eureka Server will protect these instance and set their status always UP. Because we probably need to start and shut down service frequently in the devlopment and test stage, so Eureka server is likely to enter self-presercation mode and hold invalid instances. The Eureka server activate the self-preservation mode defaultly, so in current development stage, we set this attribute to false. The application.properties code with the other attribute's setting is shown below,  
 
 ```yml
+# For Eureka Server
 eureka:
-  instance:
-    prefer-ip-address: true
   client:
-    fetch-registry: true
-    register-with-eureka: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: false   # do not register itself
+    fetch-registry: false         # don not cache registry table in local
+  server:
+    enable-self-preservation: false # disable self-preservation
 ```
 
+```yml
+## For Eureka client
+eureka:
+  instance:
+    prefer-ip-address: true # automatically picked up from system by the application, so we don't need to provide IP address in any configuration
+  client:
+    fetch-registry: true  # get the registry info
+    register-with-eureka: true # client need to register with server
+    service-url:
+      defaultZone: http://localhost:8761/eureka/  # the url of Eureka Server
+```
+
+The figures below shows the info of instances including the status, ipaddress, availability etc. The name of services is the name set at Spring.application.name in application.properties.
+
+<img src="/Users/jon/Desktop/截屏2021-08-11 12.24.50.png" alt="截屏2021-08-11 12.24.50" style="zoom:50%;" />
 
 
-## Service Invoke
 
-User feign: goods, load balance? 原理
 
-1 include feign -> write interface -> autowired the interface -> then
+
+## 3 Service Consuming
+
+Besides the communication with external resquests, the services also need to be consumed by other services through RESTful API. Spring provides the RestTemplate class which offers templates for common scenarios by HTTP method, in addition to the generalized `exchange` and `execute` methods that support of less frequent cases. For example, if we want to do GET request to the URI http://localhost:8082/order, we need call getForObject method and hardcode the uri, parmeters, return object  into business code. 
+
+```java
+Order order = restTemplate.getForObject("http://localhost:8082/order?userid=" + userid, Order.class);   
+```
+
+Another solution is the Feign client provide by Netflix. Feign abstracts lots of mechanics of calling a REST service. Similar to Mybatis, the feign is declarative. Once we configure and annotate the Feign interface, we can call a REST service by making a simple Java function call. Also we do not need to write any unit test because we do not need to write any implementation. Another advantages is feign can make request by service name by cooperating with Eureka server. For the better features, we choose Feign as client to make request to other services.
+
+The very first thing is to include the dependencies in each services. Then, we need to write interfaces and request methods. Take the email service as example, we create a UserFeignClient to make all requests to userservicem, add `@FeignClient(value = "USER-SERVICE")` to tell feign the request destination is User-service, Feign will get the IP of user service and make request based on it, and write the methods just like those request handling methods in controller classes.
 
 ```java
 @Component
 @FeignClient(value = "USER-SERVICE")
 public interface UserFeignClient {
-
     @RequestMapping(value = "/email")
     String getUserEmail(@RequestParam String userId);
 }
 ```
 
-
+In the email service's controller, we Autowired the UserFeignClient and call it just like a normal function, Feign does everything in the background.
 
 ```java
 @Autowired
 private UserFeignClient userFeignClient;
-
 public void getEmail() {
-        System.out.println(userFeignClient.getUserEmail("3"));
-    }
+    String email = userFeignClient.getUserEmail("3");
+}
 ```
+
+
 
 
 
 ## 4 Service Gateway
 
-use Spring Gateway: ?? goods
+In the micro-services system we build now, the client will directly request to the service by the URL. It will bring two problems, coupling and security issuses. The clients are coupled to the microservices because they need to know the excat ip address and  running port of every services. Also, all the microservices were exposed to the "external world", making the attack surface larger, and the authenication was carry out by microservices themselves. 
 
+To address these problem, we implement the gateway service. Zuul provided by Netflix and Spring Gateway are widely-used in Spring project. Due to the constriant of Spring Boot version, we choose Spring Gateway as the tool. Spring is newer than Zuul and was proved has better performance. Also, Spring Gateway is developed by Spring team and it is better-support to Spring Project.
 
+One of the task of gateway is the dynamic routing service, gateway will recieve all the request and forward them to real service. To use the dynamic routing, we just set the attribute `spring.cloud.gataway.discovery.locator.enabled = true`, then Spring gateway will use the registry table fetched from Eureka to map the request to service.
 
-1. #### Dynamic routing
+Another task is to filter the requests. In the initial application, we only add the authentication to the filter. To do that, we wrote a class implements the GlobalFilter to filter all the requests. By overide the filter( ) method, every requests except the `user` (login or register can't be filterd) or get `token` ( implemented in user-service for now) will be checked. If the request is valid, it will be forwarded to internal services, if not, the gateway will set 401 (UNAUTHORIZED)  status code of http response and return.
 
-   get registry table from eureka, and route request to services respectively
+```java
+public class AuthenticationFilter implements GlobalFilter {
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        ServerHttpRequest request = exchange.getRequest();
+        String path = request.getURI().getPath();
+        if(path.contains("/user") || path.contains("/token")){
+            return chain.filter(exchange);  // let it go
+        }
+        List<String> token = request.getHeaders().get("token"); // get token
+        // if token is right, let it go
+        if(JwtUtil.tokenValid(token.get(0))){
+            return chain.filter(exchange);
+        }
+        ServerHttpResponse response = exchange.getResponse();
+        response.setStatusCode(HttpStatus.UNAUTHORIZED);
+        return response.setComplete();  // return 401
+    }
+}
+```
 
-2. #### Authentication (filter)
+The authentication process used JWT token.  JSON Web Token (JWT) is an open standard ([RFC 7519](https://tools.ietf.org/html/rfc7519)) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed. JWTs can be signed using a secret (with the **HMAC** algorithm) or a public/private key pair using **RSA** or **ECDSA**[].
 
-   check the token of request, then 
+Authorization is the most common scenario for using JWT. Compared to use Session to authenticate, the server do not need to remember the authentication information which is fitable for the stateless features with our RESTful server. Also, the
+
+Once the user is logged in and get the token, each subsequent request should include the JWT, allowing the user to access services and resources that are permitted with that token. The jwt has encoded representation and decoded representation. The decoded form consists of Header (the algorithm used ), Payload (we put useid and user type to it), verify signature (like a private secret). After encoded, this information will be representation as a long String. We customised the class JwtUtil to generate the token and check the validity, code is shown in appendix.
 
 
 
@@ -545,6 +597,8 @@ the include the spring-admin to pom, and register to Eureka, fetch the registry 
 we can monitor the up and down of services,  see the running info of JVM, the loggers...
 
 ![截屏2021-07-30 10.33.41](/Users/jon/Desktop/截屏2021-07-30 10.33.41.png)
+
+
 
 
 
@@ -596,11 +650,11 @@ axios.post('http://localhost:8090/USER-SERVICE/user', this.form)
 
 
 
-<img src="/Users/jon/Desktop/截屏2021-08-02 09.02.28.png" alt="截屏2021-08-02 09.02.28" style="zoom: 33%;" />
+<img src="/Users/jon/Desktop/截屏2021-08-02 09.02.28.png" alt="截屏2021-08-02 09.02.28" style="zoom: 25%;" />
 
 
 
-<img src="/Users/jon/Desktop/截屏2021-08-02 09.02.20.png" alt="截屏2021-08-02 09.02.20" style="zoom:33%;" ><img src="/Users/jon/Desktop/截屏2021-08-02 09.04.16.png" alt="截屏2021-08-02 09.04.16" style="zoom:30%;" /
+<img src="/Users/jon/Desktop/截屏2021-08-02 09.02.20.png" alt="截屏2021-08-02 09.02.20" style="zoom: 25%;" ><img src="/Users/jon/Desktop/截屏2021-08-02 09.04.16.png" alt="截屏2021-08-02 09.04.16" style="zoom:30%;" /
 
 
 
@@ -761,18 +815,6 @@ However, this pattern also has an obvious disadvantage. That is, there is no iso
 
 
 
-[40] https://docs.spring.io/spring-boot/docs/current/reference/html/deployment.html#deployment.cloud
-
-
-
-// need some statistics
-
-(低价吸引人) In general, however, it appears that the opportunities for attracting traffic are greater through lower rates than improvements in service quality.
-
-Winston, Clifford. "A Disaggregate Model of the Demand for Intercity Freight Transportation." *Econometrica* 49, no. 4 (1981): 981-1006. Accessed July 24, 2021. doi:10.2307/1912514.
-
-
-
 
 
 # Testing
@@ -864,6 +906,58 @@ architecture [J]. IT Professional, 2019, 21(5): 57-63.
 
 [34] rest-arch https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm).
 
+[40] https://docs.spring.io/spring-boot/docs/current/reference/html/deployment.html#deployment.cloud
+
+
+
+
+
+```java
+package com.jon.gateway;
+
+import io.jsonwebtoken.*;
+
+import java.util.Base64;
+import java.util.Date;
+import java.util.UUID;
+
+public class JwtUtil {
+
+    private static long time  = 1000*60*60*24;
+    private static String signature = "bravoTransport";
+    private static String secret = Base64.getEncoder().encodeToString(signature.getBytes());
+    public static String jwt(String userId, String role){
+        JwtBuilder jwtBuilder = Jwts.builder();
+        return jwtBuilder.setHeaderParam("typ", "jwt")
+                .setHeaderParam("alg", "HS256")
+                // payload
+                .claim("userId", userId)
+                .claim("role", role)
+                .setSubject("jwt-token")
+                .setExpiration(new Date(System.currentTimeMillis() + time))
+                // signature
+                .setId(UUID.randomUUID().toString())
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
+    }
+    public static boolean tokenValid(String token){
+        JwtParser parser = Jwts.parser();
+        try {
+            Jws<Claims> claimsJws = parser.setSigningKey(secret).parseClaimsJws(token);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static String getId(String token){
+        JwtParser parser = Jwts.parser();
+        Jws<Claims> claimsJws = parser.setSigningKey(secret).parseClaimsJws(token);
+        return (String) claimsJws.getBody().get("userId");
+    }
+}
+```
+
 
 
 ```vue
@@ -916,3 +1010,4 @@ export default {
 }
 </script>
 ```
+

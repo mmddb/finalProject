@@ -17,13 +17,12 @@ import java.util.List;
 
 @Slf4j
 @Component
-@RefreshScope  // ??
+@RefreshScope
 public class AuthenticationFilter implements GlobalFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
-
         // not need
         String path = request.getURI().getPath();
         if(path.contains("/user") || path.contains("/token")){

@@ -61,7 +61,7 @@ public class LoginController {
     @GetMapping("/token")
     @ApiOperation(value = "Get a token to use in some future's request")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Authentication successfully", response = ResponseEntity.class),
-    @ApiResponse(code = 201, message = "Can't find the user", response = ResponseEntity.class)})
+                           @ApiResponse(code = 201, message = "Can't find the user", response = ResponseEntity.class)})
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "email", value = "user's email", paramType = "query", required = true),
                                 @ApiImplicitParam(name = "password", value = "user's password", paramType = "query", required = true)})
     public ResponseEntity token(String email, String password){
