@@ -31,11 +31,11 @@ class EmailApplicationTests {
 
     @Test
     public void getEmail() {
-        System.out.println(userFeignClient.getUserEmail("3"));
-        System.out.println(userFeignClient.getUserEmail("4"));
-        System.out.println(userFeignClient.getUserEmail("5"));
-        System.out.println(userFeignClient.getUserEmail("6"));
-        System.out.println(userFeignClient.getUserEmail("7"));
+//        System.out.println(userFeignClient.getUserEmail("3"));
+//        System.out.println(userFeignClient.getUserEmail("4"));
+//        System.out.println(userFeignClient.getUserEmail("5"));
+//        System.out.println(userFeignClient.getUserEmail("6"));
+//        System.out.println(userFeignClient.getUserEmail("7"));
     }
 
 

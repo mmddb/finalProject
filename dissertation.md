@@ -1,8 +1,12 @@
-#  Background
+# Introduction
 
-   ！！target user and market 可以留到 introduction ？
+### x 
 
-### 1 Target User and Market   
+The project foucus on building a production-grade back-end server, for the test use, a front-end UI was developed.
+
+### x
+
+### Target User and Market   
 
 The proposed application targets clients and drivers in short haul transport market and aims to help both parties complete the transportation. The client party including students who need transport their stuff after graduate, buyer or seller trading in Ebay, ordinary people who need transport bulky items sometimes and small businesses which need some transportation just in city. The driver party including individual drivers who have big cars like van, pick up or trucks and small local carrier companies.   
 
@@ -16,17 +20,7 @@ According to the report by IFC [3], due to additional restrictions, the volume o
 
 
 
-### 2 O2O Service Model
-
-[4]With the development of e-commerce, a new e-commerce model, O2O (Online to Offline), has come into being. This model connects offline business opportunities with the Internet, allowing customers filter services online and get the service offline.Alex Rampel [5] first proposed the concept of O2O in 2010. He believes that this model can attract more customers, companies find target customers through the network platform. Lu Yiqing and Li Chen (2013) [6] looked forward to the future development prospects and were very optimistic about the future development and potential of the O2O model. Many companies already adopted the O2O models for their businesses such as Amazon, Welmart, Alibaba [7].
-
-O2O addresses the **inequality of information**, quantifying and visualizing services on the Internet, bringing some benefits to both businesses and consumers. However, there are some issues to be noted in the application process, such as establishing a secure transaction environment, training online and offline service personnel, and seamless integration of online and offline services.
-
-As an O2O network transportation platform, the proposed application connected offline consumers and drivers, consumers request transportation services through the network, track the status of orders, drivers view specific order information on the platform, and both complete the service offline.
-
-
-
-### 3 Existing  applications
+### Existing  applications
 
 **Traditional transport companies** (**high cost and low timeliness)**
 
@@ -46,7 +40,7 @@ These applications connected the consumer and companies, help carriers  get acce
 
 
 
-### 4 Novelty of proposed application
+### Novelty of proposed application
 
 On the basis of understanding existing applications, the proposed application has some novelties on the supply side, demand side, and utilization of social transportation resources.
 
@@ -58,21 +52,23 @@ Also, the proposed application is committed to integrating the idle transportati
 
 
 
-！！ 讲一些别的可以
-
-5 Monolithic architecture
-
-使用单体架构(monolithic architecture)设计的软件系统会随着时间的推移变得庞大且复杂,这使得软件的 可维护性和可伸缩性几乎变得很差[35].
+#  Background
 
 
 
-[35]  Jonas F, Justus B, Stefan W, Alfred Z. Microservices migration in industry: Intentions, strategies, and challenges. In: Foutse K, ed.Proc. of the Int’l Conf. on Software Maintenance. 2019. 481−490. [doi: 10.1109/ICSME.2019.00081]
+### 1 O2O Service Model
+
+[4]With the development of e-commerce, a new e-commerce model, O2O (Online to Offline), has come into being. This model connects offline business opportunities with the Internet, allowing customers filter services online and get the service offline.Alex Rampel [5] first proposed the concept of O2O in 2010. He believes that this model can attract more customers, companies find target customers through the network platform. Lu Yiqing and Li Chen (2013) [6] looked forward to the future development prospects and were very optimistic about the future development and potential of the O2O model. Many companies already adopted the O2O models for their businesses such as Amazon, Welmart, Alibaba [7].
+
+O2O addresses the **inequality of information**, quantifying and visualizing services on the Internet, bringing some benefits to both businesses and consumers. However, there are some issues to be noted in the application process, such as establishing a secure transaction environment, training online and offline service personnel, and seamless integration of online and offline services.
+
+As an O2O network transportation platform, the proposed application connected offline consumers and drivers, consumers request transportation services through the network, track the status of orders, drivers view specific order information on the platform, and both complete the service offline.
 
 
 
 
 
-### 4 Monilithc Architectural
+### 2 Monilithc Architectural
 
 
 
@@ -86,7 +82,7 @@ Monolithic Architecture (MA) [1] is the traditional method of software developme
 
 
 
-### 5 Microservices architectural style  ( needs others )
+### 3 Microservices architectural style
 
 In 2014, Fowler and Lewis formally introduced the concept of microservice architecture [8]. It advocates the division of an application into a set of fine-grained services that interact with each other using lightweight communication mechanisms to provide ultimate value to the user [9]. Typically, these fine-grained microservices are small programs with a single responsibility that can be deployed, extended and tested independently [10-11].
 
@@ -104,7 +100,7 @@ Firstly, microservices interact with each other through REST and RPC, which make
 
 
 
-## **MicroService interface**
+### **4 MicroService interface**
 
 There are two popular solutions here, one is use Rpc (remote procedure call) and another is use RESTful API. A remote procedure call (RPC) is when a program causes a procedure to execute in a different physical address space, which is coded as if it were a local procedure call. Generally, the customed communication and serilization protocol were encapsulated in a framework like gRpc[] for user. 
 
@@ -118,7 +114,7 @@ REST acronym for **RE**presentational **S**tate **T**ransfer. It is an architect
 
 
 
-# <u>Design &  Architecture</u> 
+# Design &  Architecture
 
 
 
@@ -130,7 +126,7 @@ In the Initial minimal prototype, the implementation of core activities and the 
 
 Due to the urgency of time and the difficulty of implementation, the business design of initial prototype is based on informal discussions between myself and some others major in transportation and my understanding of other similar products in the background. To achieve the backend server's high performance requested by the objectives, we compared the MA and microservices and chose to design the system based on microservices architectural style.
 
-After the initial prototype is deployed in the cloud, the software testing phase starts, which includes pressure testing (/unit testing) and user-based integration testing. First, perform a pressure test to test the correctness of the system in simulated real scenarios and find the weak points in the system. After the unit test, some peoples will use the application, while part of process was mocked due to covid-19. Then we will iterate the business process and server implementation based on these collecting feedbacks.
+After the initial prototype is deployed in the cloud, the software testing phase starts, which includes pressure testing (/unit testing) and user-based integration testing. **First, perform a pressure test to test the correctness of the system in simulated real scenarios and find the weak points in the system. After the unit test, some peoples will use the application, while part of process was mocked due to covid-19. Then we will iterate the business process and server implementation based on these collecting feedbacks.**
 
 The final iteration aims to make a advanced prototype and will focus on the improvement and enhancement of the security, availability and reliability of the back-end server to achieve a system close to the production level.
 
@@ -152,17 +148,21 @@ These part introduce the microservice design, including the database schema, ser
 
 **Services Component division** 
 
-For the microservices architectural, the divison of services is important, **service granularity**，if single service is too big, 大小的影响。
-
-The objective of services division including less-coupled, minimise invoke other services etc. Dividing servics based on the interaction with databse is a good way to divide services, each services has its own database and only interact with these database. This division method ensures the isolation of each services. 
+For the microservices architectural, the service granularity is important, either too big or too small will bring troubles. The objective of services division including less-coupled, minimise invoke other services etc. Dividing servics based on the interaction with databse is a good way to divide services, each services has its own database and only interact with these database. This division method ensures the isolation of each services. 
 
 Five tables was designed to support the applicaiton, they are: 
 
-1) **Order table**: the information about the sepecific order, including driverId, clientId, place and cargo details, etc. Order table is responsible for the request when client publish new order, driver check orders in market, and they update the order status. 值得一提的点，the status of the order is defined in 4 stages - PUBLISHED (once client submit the order request) , FETCHED (after the client accept a driver's quote), PAID (client made the payment to driver), TRANSPORTED (driver completed the service).
+1) **Order table**: the information about the sepecific order, including driverId, clientId, place and cargo details, etc. Order table is responsible for the request when client publish new order, driver check orders in market, and they update the order status. The status of the order is defined in 4 stages - PUBLISHED (once client submit the order request) , FETCHED (after the client accept a driver's quote), PAID (client made the payment to driver), TRANSPORTED (driver completed the service).
+
 2) **Quote table**: including the price, the orderId, driverId and the createdata, the createdata the default value is set to the currenttime by dabase, so we don't need to set this attribute in server. The table is responsible to drivers  make quote and see the quotes of orders.
+
 3) **User table**: store the data of user, including the email, password, telephont etc, responsible for the request of authenication, register and email info when send notifications.
+
 4) **Review table**: store review information about orders, include the comments, star given by clients, and the orderId, clientId to identify user and order. The star is a number out of 5 represented the satisfy content with driver's service.
+
 5) **Payment table**: store driver's payment info, including card details for clients to make payment. The table is responsible for the response the request by client.
+
+   <img src="/Users/jon/Library/Application Support/typora-user-images/截屏2021-07-21 18.17.32.png" alt="截屏2021-07-21 18.17.32" style="zoom:30%;" />
 
 To reduce the constriant of other table when do CURD operation in single table, we will not set the external key between the tables. 
 
@@ -178,7 +178,7 @@ These service and their function:
 
 the database schema and use case of the the 3 services is shown below:
 
-<img src="/Users/jon/Library/Application Support/typora-user-images/截屏2021-07-21 18.17.32.png" alt="截屏2021-07-21 18.17.32" style="zoom:30%;" />
+
 
 <img src="/Users/jon/Desktop/截屏2021-08-09 17.48.12.png" alt="截屏2021-08-09 17.48.12" style="zoom:30%;" />
 
@@ -208,25 +208,11 @@ Another aspect need to consider is the representation of the resources when comm
 
 
 
-
-
-
-
-
-
-**c. communication between services**
-
-1. **MQ**:  make some request asynchronized, more efficient (the email service subscribe, the order service, user service publish)
-
-
-
-based on the division of services, the sequence diagram is shown below:   ![sequence diagram](/Users/jon/Downloads/sequence diagram-2.png)
+based on the design of services, the sequence diagram and user journey of initial prototype is shown below:   ![sequence diagram](/Users/jon/Downloads/sequence diagram-2.png)
 
    
 
    Introduction of basic activities. **maybe one detailed part**
-
-
 
 ![截屏2021-07-22 15.10.53](/Users/jon/Library/Application Support/typora-user-images/截屏2021-07-22 15.10.53.png)
 
@@ -234,7 +220,13 @@ based on the division of services, the sequence diagram is shown below:   ![sequ
 
 ## 5 **Platform, framework and architecture**
 
-To allow the scalability of the application, the back-end and front-end of the application will be separated. Due to the time constriant and learning cost of mobile app development, the chosen platform for application is Web. The backend consists of serveral standalone services and exposes RESTful APIs to communicates with external applications or internal services through HTTP requests. The front-end will consist of reusable UI componenent and scripts in line with user journey shown in figure x. In the future development, we can transform the front-end app to mobile devices in IOS or Android and same back-end API can be used.
+To allow the scalability of the application, the back-end and front-end of the application will be separated. Due to the time constriant and learning cost of mobile app development, the chosen platform for application is Web. 
+
+The backend consists of serveral standalone services and exposes RESTful APIs to communicates with external applications or internal services through HTTP requests. 
+
+
+
+The front-end will consist of reusable UI componenent and scripts in line with user journey shown in figure x. In the future development, we can transform the front-end app to mobile devices in IOS or Android and same back-end API can be used.
 
 
 
@@ -260,9 +252,17 @@ The services in service layser is divided to actual service modules including Us
 
 
 
+
+
+
+
+
+
+
+
+
+
 # Backend development
-
-
 
 ## 0 environment preperation
 
@@ -297,15 +297,13 @@ In the proposed application, most requests would be the CURD opeartion to databa
 
 ORMs are based on JDBC 'under the hood', they encapsulated all tedious work for us and make developer foucs on business logic. One main disadvantage comparison with JDBC is ORM framework have slow performance in case of large batch updates, so we will avoid these query in the business process.
 
-To obtain the 易用性 and maintainability, the Object-Relational-Mapping framework was used. 
+To obtain the convenience and maintainability, the Object-Relational-Mapping framework was used. 
 
 The Spring Framework supports integration with Hibernate, Java Persistence API (JPA), Java Data Objects (JDO) and iBATIS SQL Maps for resource management, data access object (DAO) implementations, and transaction strategies []. 
 
-Why Mybatis
+Why Mybatis ?
 
 Mybatis was chosen as the ORM framework integrated with Spring Boot.
-
-#### **Integration with Mybatis**
 
 User Order service as example, First we initiate a new Spring Boot project inside parent project bravotransport, and add mybatis dependency. Because we need connect Mysql database, the mysql-connector also need be added.
 
@@ -396,11 +394,9 @@ For security reasons, browsers prohibit AJAX calls to resources outside the curr
 
 Also, in the method level, we need add annotations to mapper the request to methods. We will use @GetMapping, @PostMapping, @PutMapping and @DeleteMapping and specify the request url in its attribute . For example, @GetMapping(value = "/user") will mapping HTTP `GET` requests `http://localhost:8081/user` onto specific handler methods.
 
-The last thing is define the return object. We use Java object **Response entity** to hold the information return to consumer. A ResponseEntity consists of a body and http status, which is just satsified our requirements. The status is a Enum object, it has a lot of value like OK(200), CREATED(201), NO_CONTENT(204). We can put the resoureces object to the body and set the status code to suggest the request status and Spring will construct the HTTP response based on the ResponseEntity we returned. 
+The last thing is define the return object. We use Java object **Response entity** to hold the information return to consumer. A ResponseEntity consists of a body and http status, which is just satsified our requirements. The status is a Enum object, it has a lot of value like `OK(200)`, `CREATED(201)`, `NO_CONTENT(204)`. We can put the resoureces object to the body and set the status code to suggest the request status and Spring will construct the HTTP response based on the ResponseEntity we returned. 
 
-
-
-Along with the API development, to make a good explanation for the API consumers and test the api's functionality easily, the api doc generator Swagger was used. Swagger will scan the clsss's annotations and retrieve the attributes, then make docs available in specific port. In the web pages, we easily test the apis by input the parameters and check the return values. We set the @Api, @ApiModel, @ApiModelProperty to the class, and many annotations to the methods to explain the resources model and api details including the parameters, responses, notes etc.
+Along with the API development, to make a good explanation for the API consumers and test the api's functionality easily, the api doc generator Swagger was used. Swagger will scan the clsss's annotations and retrieve the attributes, then make docs available in specific port. In the web pages, we easily test the apis by input the parameters and check the return values. We set the `@Api, @ApiModel, @ApiModelProperty` to the class, and many annotations to the methods to explain the resources model and api details including the parameters, responses, notes etc.
 
 The code below shows an example of a method:
 
@@ -564,39 +560,13 @@ Once the user is logged in and get the token, each subsequent request should inc
 
 ## 5 Service Monitor
 
-1. include actuator to the services, then expose all endpoints
+To better monitor the running of services, we implemented Spring Boot Admin. Spring can display the information in Actuator on an interface, and can also monitor the health status of all services and provide real-time alarm functions.
 
- ```xml
-   <dependency>
-       <groupId>org.springframework.boot</groupId>
-       <artifactId>spring-boot-starter-actuator</artifactId>
-   </dependency>
- ```
+To get the health info of other services, we need add Actuator denpendency to them and set `management.endpoints.web.exposure.include=*` to  expose all endpoints to external world (we will disable some sensible endpoints in production environment). When implement this part coding, the Actuator only support the Spring Boot version below 2.5.2, so we degraded the Spring Boot to 2.4.9 and solved it. In the admin project, we add Spring Boot Admin dependency and the Eureka so the admin can their health info according the ip address and port. After all the services startup, we can see the services in wallboard and check the details including the JVM, loggers, attributes, memory infos of services. When services start or offline, we can get notification about that. The figures are shown below:
 
-```properties
-management.endpoints.web.exposure.include=*
-```
-
-so we can access the info on /actutor/metrics/{names}
-
-```json
-{
-  "names": [
-    "hikaricp.connections",
-    "hikaricp.connections.acquire",
-    .....
-    "tomcat.sessions.rejected"
-  ]
-}
-```
-
-the include the spring-admin to pom, and register to Eureka, fetch the registry of other services, then monitor them.
+<img src="/Users/jon/Desktop/截屏2021-08-11 16.12.46.png" alt="截屏2021-08-11 16.12.46" style="zoom:50%;" />
 
 ![截屏2021-07-30 10.24.03](/Users/jon/Library/Application Support/typora-user-images/截屏2021-07-30 10.24.30.png)
-
-we can monitor the up and down of services,  see the running info of JVM, the loggers...
-
-![截屏2021-07-30 10.33.41](/Users/jon/Desktop/截屏2021-07-30 10.33.41.png)
 
 
 
@@ -606,17 +576,7 @@ we can monitor the up and down of services,  see the running info of JVM, the lo
 
 ## 0 set dev environment 
 
-researching and installing VueJS  and the VueCli tool - provided by VueJS - was used to set up the project, installing the required packages and creating an initial folder structure. This folder structure, being based on VueJS’s best practices, helped to quickly start development. 
-
-To help with the styling of the application, Bootstrap were used  In this project, Bootstrap is mainly used for its margin and responsive classes, since it allows you to quicker create a basic layout for the application development rather than doing so manually.
-
-plugins: 
-
-vue-sweetalert2,
-
-google-maps,  
-
-element-ui
+This part mainly consists of researching and installing VueJS, the VueCli tool and other plugins used to in fronted. The plugins including element-ui (a Desktop UI Library), vue-sweetalert2 (make beautiful alert ) and google-maps (request routes info).
 
 
 
@@ -658,7 +618,7 @@ axios.post('http://localhost:8090/USER-SERVICE/user', this.form)
 
 
 
-## 2 Home page and common part (layout...)
+## 2 Home page and common part 
 
 After logging in, the home page is immediately followed, which is also the place to support all subsequent activities of the user.
 The page adopts the layout of Aside, header, and main; aside serves as the side menu bar and provides the entrance to user activities. The header displays user-related information, and the main space is used to display the current active page, such as posting orders, viewing order information, etc. The component displayed in the main contains the '' **:is** '' tag of Vue, so that after impoting the Vue component of each activity, we can change the value of currentView to the name of other modules to replace the displayed content.
@@ -696,12 +656,6 @@ Reviews Part
 
 
 
-myInfo:
-
-
-
-
-
 ## 3 Clients part
 
 For the client, myOrders displays his previously released order information, and uses the el-table component  design the style conveniently. In the table, the order id, address, type of goods and the status of the order are displayed. The last column is the operations that can be performed on the current order.
@@ -734,9 +688,7 @@ After setting attribute `data` of `el-table` with an object array, we used `prop
 
 ![截屏2021-08-03 11.45.58](/Users/jon/Library/Application Support/typora-user-images/截屏2021-08-03 11.45.58.png)
 
-make review: 
-
-Using the el-rate label, the stars at the top of the dialog box represent scores, each star represents one point, and the bottom is a comment input box. These two parameters are respectively bound to the value and review variables in the component. After the user clicks submit, it will be sent to the backend.
+Makint review: Using the el-rate label, the stars at the top of the dialog box represent scores, each star represents one point, and the bottom is a comment input box. These two parameters are respectively bound to the value and review variables in the component. After the user clicks submit, it will be sent to the backend.
 
 <img src="/Users/jon/Library/Application Support/typora-user-images/截屏2021-08-04 14.23.01.png" alt="截屏2021-08-04 14.23.01" style="zoom:33%;" />
 
@@ -744,7 +696,7 @@ Using the el-rate label, the stars at the top of the dialog box represent scores
 
 
 
-## 4 Market part
+## 4 Driver part (Market page)
 
 The market page is the driver's unique interface, which displays all the orders placed by users on the market and the operations that can be performed.
 
@@ -768,8 +720,6 @@ There are 3 types of driver operations for each order, namely More (see more spe
 
 
 In terms of obtaining order information, the request for market order information from the backend is encapsulated in the Vue method beforeCreate(), so that before the module is displayed, we can pass the obtained Order array into the data Orderdata defined on this page.
-
-
 
 The implementation of the three operations of the order is as follows. The first is the display of the order details: similar to the previous display of MyOrders component, the order data object of the row is assigned to infodata through 'slot-scope', and the variable detailsInvisiable is set to true to display the dialog box.
 
@@ -797,19 +747,15 @@ The last is the display of route information. Drivers can check the route plan, 
 
 ## Deployment
 
-For this project, there are two main solutions for deploying to the cloud. One is the ecs cloud server (IaaS) that needs to manually configure the application but has a higher degree of freedom, and the other is to choose the (PaaS) platform as a service provider that is responsible for all the details of the infrastructure.
+For this project, there are two main solutions for deploying to the cloud. One is the virtual machine in cloud server (IaaS) that needs to manually configure the application but has a higher degree of freedom, and the other is to choose the (PaaS) platform as a service provider that is responsible for all the details of the infrastructure.
 
 Choosing PaaS can focus on developing applications without worrying about configuring and maintaining servers. With the support of PaaS service providers, a single application can be deployed easily, but for a microservice project with multiple independent sub-projects, deployment is more time-consuming. And the front-end server and database may also choose other different service providers for deployment, the communication between them and the back-end server is also a problem.
 
-
-
-In the end, we chose the cloud server of IaaS Google Cloud Platform for deployment, and obtained a Linux host running 4G of memory through the trial plan. For deployment, we adopted Multiple Service Instances per Host Pattern. Its advantage is that resource usage is relatively efficient, and multiple service instances share the server and its operating system. Deploying service instances is relatively fast. Just copy the service to the host and start it. Since our service is written in Java, we only need to copy the JAR, and we can package a single service into multiple Jar packages to achieve multiple instances.
-
-However, this pattern also has an obvious disadvantage. That is, there is no isolation between service instances. Although we can accurately monitor the resource utilization of each service instance, we cannot limit the resources used by each instance. A misbehaving service instance may consume all the memory or CPU of the host.
+In the end, we chose the cloud server of IaaS Google Cloud Platform for deployment, and obtained a Linux host running 4G of memory through the trial plan. For deployment, we adopted Multiple Service Instances per Host Pattern. Its advantage is that resource usage is relatively efficient, and multiple service instances share the server and its operating system. Deploying service instances is relatively fast. Just copy the service to the host and start it. Since our service is written in Java, we only need to copy the JAR, and we can package a single service into multiple Jar packages to achieve multiple instances. For the shortcomings like there is no isolation between service instances, we will leave it in the future development.  
 
 
 
-这样一来，我们直接传输每个服务打包好的的jar文件到云主机对后端服务器进行部署，将vue项目build好后，  将本地数据库的sql文件传到云主机。
+
 
 
 
