@@ -2,6 +2,7 @@ package com.jon.order.mapper;
 
 import com.jon.order.entity.Order;
 import com.jon.order.entity.Quote;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -37,4 +38,8 @@ public interface OrderMapper {
 
     @Select("SELECT * FROM Orders WHERE driverId = #{clientId}")
     List<Order> selectByDriverId(String driverId);
+
+    @Delete("DELETE * FROM Orders WHERE oderId = #{orderId}")
+    void deleteOrder(String orderId);
+
 }

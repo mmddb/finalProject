@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,14 +28,17 @@ public class OrderController {
 
     @PostMapping("/order")
     @ApiOperation(value = "Publish new order to the platform")
-    public ResponseEntity publishOrder(@RequestBody Order order, @RequestHeader String token){
-        System.out.println(JwtUtil.getId(token));
-        order.setClientId(JwtUtil.getId(token));
+    public ResponseEntity publishOrder(@RequestBody Order order, String clientId){
+        if(clientId == null){
+            return new ResponseEntity(null, HttpStatus.NOT_ACCEPTABLE);
+        }
+        order.setClientId(clientId);
         System.out.println(order);
         try {
             orderMapper.insertOrder(order);
         } catch (Exception e) {
             e.printStackTrace();
+            return new ResponseEntity(null, HttpStatus.NOT_ACCEPTABLE);
         }
         return new ResponseEntity(order, HttpStatus.CREATED);
     }
