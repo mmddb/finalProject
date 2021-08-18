@@ -174,7 +174,7 @@ public class LoginController {
         try {
             userMapper.insertPayment(payment);
         }catch (Exception MysqlDataTruncation){
-            // not satisfied the lenghth requirement
+            // not satisfied the length requirement
             return new ResponseEntity(null, HttpStatus.LENGTH_REQUIRED);
         }
         return new ResponseEntity(null, HttpStatus.CREATED);

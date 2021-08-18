@@ -38,4 +38,4 @@ management:
       show-details: always
 logging:
   file:
-    name: admin-client.log
+    name: email.log

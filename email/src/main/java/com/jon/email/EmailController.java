@@ -24,13 +24,37 @@ public class EmailController {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Autowired
+    private UserFeignClient userFeignClient;
+
     private final String OFFICIAL_EMAIL = "763989249@qq.com";
 
     @PostMapping(value = "/statusemail")
     @ApiOperation(value = "Send e-mail to user when order status has updated")
-    public ResponseEntity sendEmail(String status, String orderId, String driverId) throws Exception {
+    public ResponseEntity statusEmail(String status, String userId, String orderId) throws Exception {
         try {
-            sendmail(status, orderId, driverId);
+            String content = "Hi, your order ( Id : " + orderId + " ) status has been updated to " + status +
+                    " ,you can check the details in our website." + " \n\n Best wishes!";
+            String email = userFeignClient.getUserEmail(userId);
+            send(email, "Order Status Update", content);
+        }catch (Exception e){
+            return new ResponseEntity(null, HttpStatus.EXPECTATION_FAILED);
+        }
+        return new ResponseEntity(null, HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/registeremail")
+    @ApiOperation("send a register confirmation email")
+    public ResponseEntity registerEmail(String email, String username) throws Exception {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(OFFICIAL_EMAIL);
+            message.setTo(email);
+            message.setSubject(" Register Confirmation");
+            message.setText("How are you, " + username +" ! Your have registered with us successfully. \n\n" +
+                    "Best wishes!" );
+            message.setSentDate(new Date(System.currentTimeMillis()));
+            mailSender.send(message);
         }catch (Exception e){
             return new ResponseEntity(null, HttpStatus.EXPECTATION_FAILED);
         }
@@ -38,36 +62,30 @@ public class EmailController {
     }
 
     @PostMapping(value = "/quoteemail")
-    @ApiOperation(value = "Send e-mail to user when driver give quote to client's order")
-    public ResponseEntity quoteEmail(String quote, String orderId, String driverId) throws Exception {
+    @ApiOperation(value = "Send e-mail to tell user when driver give quote")
+    public ResponseEntity quoteEmail(String clientId, String quote, String start, String end, String driverId) throws Exception {
         try {
-            // send to user, tell them the new quote
+            String clientEmail = userFeignClient.getUserEmail(clientId);
+            String payment = userFeignClient.getUserPayment(driverId);
+            String content = "Hi, there was a quote of " + quote + " pounds given to your order from " +
+                    start + " to " + end + ", please login to the website to see the details." +
+                    "\n Driver's payment info : " + payment +
+                    "\n after you paid, remember click the paid button in your website account";
+            System.out.println(clientEmail + payment + content);
+            send(clientEmail, "New quote",content);
         }catch (Exception e){
+            e.printStackTrace();
             return new ResponseEntity(null, HttpStatus.EXPECTATION_FAILED);
         }
         return new ResponseEntity(null, HttpStatus.CREATED);
     }
 
-    // subject : register success
-    // order published, fetched, transported, completed
-    private void sendmail(String status, String orderId, String useremail) throws Exception {
-
-        // get user's email from USER SERVICES
-
-        // get Order from ORDER_SERVICE
-        Order order = new Order();
-        // get User
-
-        // Set driver's reviews link to user
-
-        useremail = "zphjon@gmail.com";
+    private void send(String email, String subject, String content) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(OFFICIAL_EMAIL);
-
-        message.setTo(useremail);
-        message.setSubject("Order " + status);
-        message.setText("Your order has been " + status + "\n " + order.toString() + "\n\n Best BravoTransport!");
-
+        message.setTo(email);
+        message.setSubject(subject);
+        message.setText(content);
         message.setSentDate(new Date(System.currentTimeMillis()));
         System.out.println(message);
         mailSender.send(message);

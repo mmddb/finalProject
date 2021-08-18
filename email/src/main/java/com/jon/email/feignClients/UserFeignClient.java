@@ -11,4 +11,7 @@ public interface UserFeignClient {
 
     @RequestMapping(value = "/email")
     String getUserEmail(@RequestParam String userId);
+
+    @RequestMapping(value = "/payment")
+    String getUserPayment(@RequestParam String userId);
 }

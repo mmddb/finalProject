@@ -3,15 +3,16 @@ package com.jon.order.controller;
 import com.jon.order.JwtUtil;
 import com.jon.order.entity.Order;
 import com.jon.order.entity.Quote;
+import com.jon.order.feignClients.EmailFeignClient;
 import com.jon.order.mapper.OrderMapper;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,13 +24,13 @@ public class OrderController {
     @Autowired(required = false)
     OrderMapper orderMapper;
 
-
-    RestTemplate rest = new RestTemplate();
+    @Autowired
+    private EmailFeignClient emailFeignClient;
 
     @PostMapping("/order")
     @ApiOperation(value = "Publish new order to the platform")
     public ResponseEntity publishOrder(@RequestBody Order order, String clientId){
-        if(clientId == null){
+        if(clientId == null || order == null){
             return new ResponseEntity(null, HttpStatus.NOT_ACCEPTABLE);
         }
         order.setClientId(clientId);
@@ -56,8 +57,8 @@ public class OrderController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // send confirmation email to client and driver
-
+        String clientId = orderMapper.selectOrderById(orderId).getClientId();
+        emailFeignClient.statusEmail(status, clientId ,orderId);
         return new ResponseEntity(null, HttpStatus.OK);
     }
 
@@ -117,17 +118,19 @@ public class OrderController {
             @ApiResponse(code = 204, message = "No Content", response = ResponseEntity.class)
     })
     public ResponseEntity setQuote(String orderId, String driverId, Integer quote){
-
         System.out.println(orderId + driverId + quote);
         Quote q = new Quote();
-
         q.setOrderId(orderId);
         q.setDriverId(driverId);
         q.setQuote(quote);
-
         orderMapper.insertQuote(q);
         System.out.println(q);
         // give client a notification
+        Order order = orderMapper.selectOrderById(orderId);
+
+        emailFeignClient.quoteEmail(order.getClientId(), String.valueOf(quote), order.getStartAddress(),
+                order.getEndAddress(), driverId);
+
         return new ResponseEntity(null, HttpStatus.CREATED);
     }
 
@@ -141,7 +144,6 @@ public class OrderController {
         if(qs.size() == 0){
             return new ResponseEntity(null, HttpStatus.NO_CONTENT);
         }
-        // give client a notification
         return new ResponseEntity(qs, HttpStatus.OK);
     }
 
