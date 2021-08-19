@@ -5,6 +5,8 @@ import com.jon.order.controller.OrderController;
 
 
 import com.jon.order.entity.Order;
+import com.jon.order.entity.Quote;
+import com.jon.order.mapper.OrderMapper;
 import lombok.SneakyThrows;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -47,10 +50,30 @@ public class OrderApplicationTests {
     @Autowired
     private OrderController orderController;
 
+    @Autowired(required = false)
+    private OrderMapper orderMapper;
+
+    @Test
+    public void insertQuote() {
+        Quote q = new Quote();
+        q.setDriverId("1");
+        q.setQuote(10000);
+        orderMapper.insertQuoteMistake(q);
+    }
+
+    @Test
+    public void retrieveAll() throws Exception {
+        for (int i = 0; i < 0; i++) {
+            this.mockMvc.perform(get("/order/all")).andDo(print()).andExpect(status().isOk());
+        }
+    }
+
     @Test
     public void contextLoads() throws Exception {
         assertThat(orderController).isNotNull();
     }
+
+
 
     @Test
     public void getallTest() throws Exception {
@@ -65,7 +88,7 @@ public class OrderApplicationTests {
     @Test
     @Rollback
     public void concurrencyTest() throws Exception {
-        startTaskAllInOnce(500);
+        startTaskAllInOnce(100);
         // 2000 6s
         // 1000 3s
     }
@@ -80,8 +103,8 @@ public class OrderApplicationTests {
                     // 使线程在此等待，当开始门打开时，一起涌入门中
                     startGate.await();
                     try {
-                        // task.run();  // the task
                         insertTest(String.valueOf(finalI));
+                        //this.mockMvc.perform(get("/order/all")).andDo(print()).andExpect(status().isOk());
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
@@ -104,6 +127,7 @@ public class OrderApplicationTests {
         ObjectMapper objectMapper = new ObjectMapper();
         Order order = Order.builder().clientId(userId).startAddress("Aristol").endAddress("Bath").city("Bristol").cargoInfo("a beautiful guitar")
                 .cargoType("instrument").date("1000-05-22").time("12:00").telephone("4775874568").sPostcode("BS15TP").ePostcode("BA4ED").build();
+
         String jsonorder = objectMapper.writeValueAsString(order);
         System.out.println(order.toString());
 //        // the clientId or Order can't be NULL

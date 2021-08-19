@@ -119,12 +119,13 @@ public class LoginController {
     public ResponseEntity getReview(String userId, @RequestHeader String token){
         System.out.println(userId);
         System.out.println(token);
-
-        //  do not check here, leave it to gateway
-//        if(!JwtUtil.tokenValid(token)){
-//            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
-//        }
-        List<Review> reviews = userMapper.getReviewsById(userId);
+        User user = userMapper.findUserById(userId);
+        List<Review> reviews;
+        if(user.getType().equals("CLIENT")){
+            reviews = userMapper.getReviewsByClientId(userId);
+        }else{
+            reviews = userMapper.getReviewsByDriverId(userId);
+        }
         if(reviews.size() == 0){
             return new ResponseEntity(null, HttpStatus.NO_CONTENT);
         }
@@ -136,15 +137,11 @@ public class LoginController {
     @ApiImplicitParam(name = "token", paramType = "header", required = true)
     public ResponseEntity publishReview(@RequestBody Review review, String token){
         System.out.println(review);
-        if(!JwtUtil.tokenValid(token)){
-            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
-        }
         try{
             userMapper.insertReview(review);
         }catch (Exception e){
-            // 不符合外键约束不报错 ？？
+            e.printStackTrace();
         }finally {
-
         }
         return new ResponseEntity(null, HttpStatus.CREATED);
     }

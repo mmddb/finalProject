@@ -21,14 +21,20 @@ public interface OrderMapper {
     @Select("SELECT * FROM Orders WHERE orderId = #{orderId}")
     Order selectOrderById(String orderId);
 
-    @Update({"UPDATE Orders SET status = #{status}, driverId = #{driverId} WHERE orderId = #{orderId}"})
-    void updateOrder(String driverId, String orderId, String status);
+    @Update({"UPDATE Orders SET status = #{status} WHERE orderId = #{orderId}"})
+    void updateOrder(String orderId, String status);
+
+    @Update({"UPDATE Orders SET status = 'FETCHED', driverId = #{userId} WHERE orderId = #{orderId}"})
+    void setDriver(String userId, String orderId);
 
     @Update({"UPDATE Orders SET price = #{price} WHERE orderId = #{orderId}"})
     void updatePrice(String orderId, String price);
 
     @Insert({"INSERT INTO Quotes (orderId, driverId, quote) VALUES(#{orderId},#{driverId},#{quote}) "})
     void insertQuote(Quote q);
+
+    @Insert({"INSERT INTO Quotes (driverId, quote) VALUES(#{driverId},#{quote}) "})
+    void insertQuoteMistake(Quote q);
 
     @Select("SELECT * FROM Quotes WHERE orderId = #{orderId}")
     List<Quote> selectByOrderId(String orderId);
@@ -39,7 +45,9 @@ public interface OrderMapper {
     @Select("SELECT * FROM Orders WHERE driverId = #{clientId}")
     List<Order> selectByDriverId(String driverId);
 
-    @Delete("DELETE * FROM Orders WHERE oderId = #{orderId}")
+    @Delete("DELETE FROM Orders WHERE orderId = #{orderId}")
     void deleteOrder(String orderId);
+
+
 
 }

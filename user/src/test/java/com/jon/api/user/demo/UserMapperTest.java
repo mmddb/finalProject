@@ -25,6 +25,16 @@ public class UserMapperTest {
         assert user != null;
     }
 
+    @Test
+    public void testRegister() throws Exception {
+        User user = new User();
+        user.setEmail("jon_1999@foxmail.com");
+        user.setName("jon");
+        user.setPassword("jon");
+        user.setType("CLIENT");
+        UserMapper.insertUser(user);
+    }
+
 
 
 }

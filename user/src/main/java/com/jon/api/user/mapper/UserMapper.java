@@ -22,6 +22,9 @@ public interface UserMapper {
     @Select("SELECT * FROM Users WHERE email = #{email} ")
     User findUserByEmail(String email);
 
+    @Select("SELECT * FROM Users WHERE id = #{id} ")
+    User findUserById(String id);
+
     @Select("SELECT * FROM Payment WHERE userId = #{userId} ")
     Payment getPaymentById(String userId);
 
@@ -35,7 +38,10 @@ public interface UserMapper {
     void insertReview(Review review);
 
     @Select("SELECT * FROM Review WHERE driverId = #{driverId} ")
-    List<Review> getReviewsById(String driverId);
+    List<Review> getReviewsByDriverId(String driverId);
+
+    @Select("SELECT * FROM Review WHERE clientId = #{clientId} ")
+    List<Review> getReviewsByClientId(String clientId);
 
     @Select("SELECT email FROM Users WHERE id = #{userId} ")
     String getEmailById(String userId);

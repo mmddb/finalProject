@@ -1,7 +1,5 @@
 package com.jon.email;
 
-
-import com.jon.email.entity.Order;
 import com.jon.email.feignClients.UserFeignClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

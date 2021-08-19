@@ -1,5 +1,5 @@
 package com.jon.email.entity;
 
-enum OrderStatus {
-    PUBLISHED, FETCHED, TRANSPORTED,  COMPLETED;
+public enum OrderStatus {
+    PUBLISHED, FETCHED, PAID,  TRANSPORTED,COMPLETED;
 }

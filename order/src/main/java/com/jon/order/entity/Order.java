@@ -50,6 +50,7 @@ public class Order {
     private String driverId;
 
     @ApiModelProperty(value = "Order's status (PUBLISHED, FETCHED, TRANSPORTED, COMPLETED)")
+    @Builder.Default
     private OrderStatus status = OrderStatus.PUBLISHED;
 
     @ApiModelProperty(value = "Contact number of client")

@@ -1,7 +1,7 @@
 package com.jon.order.controller;
 
-import com.jon.order.JwtUtil;
 import com.jon.order.entity.Order;
+import com.jon.order.entity.OrderStatus;
 import com.jon.order.entity.Quote;
 import com.jon.order.feignClients.EmailFeignClient;
 import com.jon.order.mapper.OrderMapper;
@@ -9,9 +9,7 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,21 +42,43 @@ public class OrderController {
         return new ResponseEntity(order, HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/order")
+    @ApiOperation("delete order")
+    public ResponseEntity deleteOrder(String user, String type, String orderId) {
+        orderMapper.deleteOrder(orderId);
+        return new ResponseEntity(null, HttpStatus.OK);
+    }
+
     @PutMapping("/order")
-    @ApiOperation(value = "Update order status, used to fetch order, confirm transport, payment or cancel order")
+    @ApiOperation(value = "Update order status, used to fetch order, confirm transport, payment ")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Updated successfully", response = ResponseEntity.class),
-            @ApiResponse(code = 406, message = "Order status not acceptable", response = ResponseEntity.class)})
-    public ResponseEntity fetchOrder(String driverId, String orderId, String status){
-        if(!(status.equals("FETCHED") || status.equals("TRANSPORTED") || status.equals("PAID") || status.equals("COMPLETED"))){
-            return new ResponseEntity(null, HttpStatus.NOT_ACCEPTABLE);
-        }
+            @ApiResponse(code = 406, message = "Order status not acceptable", response = ResponseEntity.class),
+            @ApiResponse(code = 424, message = "Email service current is not available", response = ResponseEntity.class)})
+    public ResponseEntity updateOrder(String userId, String type, String orderId, OrderStatus status) {
+        System.out.println(" ===== " + userId + type + orderId + status.toString());
+        Order order = orderMapper.selectOrderById(orderId);
+        System.out.println(order);
+        OrderStatus curStat = order.getStatus();
+//        if(status.compareTo(curStat) <= 0){
+//            System.out.println(status.compareTo(curStat));
+//            return new ResponseEntity(null, HttpStatus.NOT_ACCEPTABLE);
+//        }
+        System.out.println(status);
         try {
-            orderMapper.updateOrder(driverId, orderId, status);
+            if(status.equals(OrderStatus.FETCHED)){
+                orderMapper.setDriver(userId, orderId);
+            }
+            orderMapper.updateOrder(orderId, status.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
         String clientId = orderMapper.selectOrderById(orderId).getClientId();
-        emailFeignClient.statusEmail(status, clientId ,orderId);
+        try{
+            emailFeignClient.statusEmail(status.toString(), clientId ,orderId);
+        }catch (Exception e){
+            return new ResponseEntity("Email service is dead", HttpStatus.FAILED_DEPENDENCY);
+        }
+
         return new ResponseEntity(null, HttpStatus.OK);
     }
 
