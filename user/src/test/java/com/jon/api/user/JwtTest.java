@@ -1,4 +1,4 @@
-package com.jon.api.user.demo;
+package com.jon.api.user;
 
 import io.jsonwebtoken.*;
 import org.junit.Test;

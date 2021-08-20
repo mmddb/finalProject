@@ -1,4 +1,4 @@
-package com.jon.api.user;
+package com.jon.user;
 
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -23,7 +23,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(buildApiInf())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.jon.api.user"))
+                .apis(RequestHandlerSelectors.basePackage("com.jon.user"))
                 .paths(PathSelectors.any())
                 .build();
     }

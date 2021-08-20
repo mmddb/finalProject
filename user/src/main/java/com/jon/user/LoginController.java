@@ -1,8 +1,9 @@
-package com.jon.api.user;
+package com.jon.user;
 
-import com.jon.api.user.Entity.*;
-import com.jon.api.user.mapper.UserMapper;
-import com.jon.api.user.util.JwtUtil;
+import com.jon.user.Entity.*;
+import com.jon.user.Entity.*;
+import com.jon.user.mapper.UserMapper;
+import com.jon.user.util.JwtUtil;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.HeaderParam;
 import java.util.List;
 
 @RestController
@@ -89,7 +89,7 @@ public class LoginController {
 
     @ApiIgnore
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public LoginResult login( @RequestBody LoginInfo loginInfo){
+    public LoginResult login(@RequestBody LoginInfo loginInfo){
 
         System.out.println("进来了");
 

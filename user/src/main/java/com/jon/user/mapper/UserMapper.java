@@ -1,7 +1,7 @@
-package com.jon.api.user.mapper;
-import com.jon.api.user.Entity.Payment;
-import com.jon.api.user.Entity.Review;
-import com.jon.api.user.Entity.User;
+package com.jon.user.mapper;
+import com.jon.user.Entity.Payment;
+import com.jon.user.Entity.Review;
+import com.jon.user.Entity.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;

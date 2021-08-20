@@ -1,8 +1,9 @@
-package com.jon.api.user.demo;
+package com.jon.api.user;
 
 
-import com.jon.api.user.Entity.User;
-import com.jon.api.user.mapper.UserMapper;
+
+import com.jon.user.Entity.User;
+import com.jon.user.mapper.UserMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

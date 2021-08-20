@@ -1,4 +1,4 @@
-package com.jon.api.user.Entity;
+package com.jon.user.Entity;
 
 public class Order {
 

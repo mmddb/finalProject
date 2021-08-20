@@ -1,4 +1,4 @@
-package com.jon.api.user.Entity;
+package com.jon.user.Entity;
 
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;

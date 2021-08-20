@@ -1,4 +1,4 @@
-package com.jon.api.user.util;
+package com.jon.user.util;
 
 import io.jsonwebtoken.*;
 
