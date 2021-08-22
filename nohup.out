@@ -1,0 +1,6 @@
+Error: Unable to access jarfile admin/target/admin-0.0.1-SNAPSHOT.jar
+Error: Unable to access jarfile order/target/order-0.0.1-SNAPSHOT.jar
+Error: Unable to access jarfile gateway/target/gateway-0.0.1-SNAPSHOT.jar
+Error: Unable to access jarfile eureka/target/eureka-0.0.1-SNAPSHOT.jar
+Error: Unable to access jarfile user/target/user-0.0.1-SNAPSHOT.jar
+Error: Unable to access jarfile email/target/email-0.0.1-SNAPSHOT.jar
