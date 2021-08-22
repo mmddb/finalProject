@@ -16,8 +16,13 @@ pipeline {
         stage ('Build') {
             steps {
                 sh 'mvn -Dmaven.test.failure.ignore=true install' 
+                
             }
-           
+        }
+        stage('Deliver') { 
+            steps {
+                sh './scripts/deliver.sh' 
+            }
         }
       
     }
