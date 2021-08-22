@@ -35,6 +35,7 @@ public class OrderController {
         System.out.println(order);
         try {
             orderMapper.insertOrder(order);
+            //emailFeignClient.statusEmail("PUBLISHED",clientId,);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(null, HttpStatus.NOT_ACCEPTABLE);

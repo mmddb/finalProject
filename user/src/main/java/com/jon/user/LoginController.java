@@ -1,7 +1,6 @@
 package com.jon.user;
 
 import com.jon.user.Entity.*;
-import com.jon.user.Entity.*;
 import com.jon.user.mapper.UserMapper;
 import com.jon.user.util.JwtUtil;
 import io.swagger.annotations.*;
@@ -21,6 +20,9 @@ public class LoginController {
 
     @Autowired(required = false)
     private UserMapper userMapper;
+
+    @Autowired
+    private EmailFeignClient emailFeignClient;
 
     @ApiIgnore
     @GetMapping("/checkToken")
@@ -52,6 +54,7 @@ public class LoginController {
         User newUser;
         // register success
         if ((newUser = userMapper.findUserByEmail(user.getEmail())) != null) {
+            emailFeignClient.registerEmail(user.getEmail(), user.getName());
             return new ResponseEntity(newUser, HttpStatus.CREATED);
         }
         // server error
@@ -135,7 +138,7 @@ public class LoginController {
     @PostMapping("/review")
     @ApiOperation(value = "Leave review to driver on specific order")
     @ApiImplicitParam(name = "token", paramType = "header", required = true)
-    public ResponseEntity publishReview(@RequestBody Review review, String token){
+    public ResponseEntity publishReview(@RequestBody Review review){
         System.out.println(review);
         try{
             userMapper.insertReview(review);
