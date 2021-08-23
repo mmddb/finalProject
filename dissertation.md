@@ -344,7 +344,7 @@ public interface UserMapper {
 Thirdly, tell the application where is the mapper interface. Add annotaion MapperScan in the start class of project, so mybatis will know where to find the mapper file. 
 
 ```java
-@MapperScan("com.jon.api.user.mapper")
+@MapperScan("com.jon.user.mapper")
 public class UserApplication {
     public static void main(String[] args) {
         SpringApplication.run(UserApplication.class, args);

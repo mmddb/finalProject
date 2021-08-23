@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>com.jon.api.user</groupId>
+    <groupId>com.jon.user</groupId>
     <artifactId>user</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>user</name>

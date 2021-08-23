@@ -1,4 +1,4 @@
-package com.jon.api.user;
+package com.jon.user;
 
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
