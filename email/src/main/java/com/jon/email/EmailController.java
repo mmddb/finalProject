@@ -70,7 +70,8 @@ public class EmailController {
                     "\n Driver's payment info : " + payment +
                     "\n after you paid, remember click the paid button in your website account";
             System.out.println(clientEmail + payment + content);
-            send(clientEmail, "New quote",content);
+
+            send(clientEmail, "New quote", content);
         }catch (Exception e){
             e.printStackTrace();
             return new ResponseEntity(null, HttpStatus.EXPECTATION_FAILED);

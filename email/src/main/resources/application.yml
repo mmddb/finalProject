@@ -36,6 +36,3 @@ management:
   endpoint:
     health:
       show-details: always
-logging:
-  file:
-    name: email.log
