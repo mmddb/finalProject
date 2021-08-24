@@ -118,10 +118,10 @@ public class LoginController {
 
     @GetMapping("/review")
     @ApiOperation(value = "Get reviews of Drivers")
-    @ApiImplicitParam(name = "token", paramType = "header", required = true)
-    public ResponseEntity getReview(String userId, @RequestHeader String token){
+//    @ApiImplicitParam(name = "token", paramType = "header", required = true)
+    public ResponseEntity getReview(String userId){
         System.out.println(userId);
-        System.out.println(token);
+        //System.out.println(token);
         User user = userMapper.findUserById(userId);
         List<Review> reviews;
         if(user.getType().equals("CLIENT")){

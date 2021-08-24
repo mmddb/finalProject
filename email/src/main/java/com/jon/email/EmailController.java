@@ -75,7 +75,7 @@ public class EmailController {
             String accept = "You can click http://localhost:8082/accept?driverId="+driverId+"&orderId="+orderId
                     + " to accept \n";
             // reviews
-            String review = "Click http://localhost:8081/review?driverId="+driverId
+            String review = "Click http://localhost:8081/review?userId="+driverId
                     + " to see the reviews of driver";
 
             send(clientEmail, "New quote", content  + accept + review);
