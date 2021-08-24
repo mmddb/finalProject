@@ -61,17 +61,24 @@ public class EmailController {
 
     @PostMapping(value = "/quoteemail")
     @ApiOperation(value = "Send e-mail to tell user when driver give quote")
-    public ResponseEntity quoteEmail(String clientId, String quote, String start, String end, String driverId) throws Exception {
+    public ResponseEntity quoteEmail(String clientId, String quote, String driverId, String orderId) throws Exception {
         try {
             String clientEmail = userFeignClient.getUserEmail(clientId);
             String payment = userFeignClient.getUserPayment(driverId);
-            String content = "Hi, there was a quote of " + quote + " pounds given to your order from " +
-                    start + " to " + end + ", please login to the website to see the details." +
+            String content = "Hi, there was a quote of " + quote + " pounds given to your order" +
+                   ", please login to the website to see the details." +
                     "\n Driver's payment info : " + payment +
                     "\n after you paid, remember click the paid button in your website account";
             System.out.println(clientEmail + payment + content);
 
-            send(clientEmail, "New quote", content);
+            // 接受链接 set fetched orderId, driverid, PUT ??
+            String accept = "You can click http://localhost:8082/accept?driverId="+driverId+"&orderId="+orderId
+                    + " to accept \n";
+            // reviews
+            String review = "Click http://localhost:8081/review?driverId="+driverId
+                    + " to see the reviews of driver";
+
+            send(clientEmail, "New quote", content  + accept + review);
         }catch (Exception e){
             e.printStackTrace();
             return new ResponseEntity(null, HttpStatus.EXPECTATION_FAILED);

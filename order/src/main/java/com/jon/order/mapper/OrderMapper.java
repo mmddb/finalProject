@@ -24,8 +24,8 @@ public interface OrderMapper {
     @Update({"UPDATE Orders SET status = #{status} WHERE orderId = #{orderId}"})
     void updateOrder(String orderId, String status);
 
-    @Update({"UPDATE Orders SET status = 'FETCHED', driverId = #{userId} WHERE orderId = #{orderId}"})
-    void setDriver(String userId, String orderId);
+    @Update({"UPDATE Orders SET status = 'FETCHED', driverId = #{driverId} WHERE orderId = #{orderId}"})
+    void setDriver(String driverId, String orderId);
 
     @Update({"UPDATE Orders SET price = #{price} WHERE orderId = #{orderId}"})
     void updatePrice(String orderId, String price);

@@ -12,9 +12,8 @@ public interface EmailFeignClient {
 
     @PostMapping(value = "/quoteemail")
     void quoteEmail(@RequestParam String clientId, @RequestParam String quote,
-                    @RequestParam String start,@RequestParam String end,
-                    @RequestParam String driverId);
+                    @RequestParam String driverId,@RequestParam String orderId);
 
     @PostMapping(value = "/statusemail")
-    void statusEmail(@RequestParam String status, @RequestParam String userId,@RequestParam String orderId);
+    void statusEmail(@RequestParam String status, @RequestParam String userId, @RequestParam String orderId);
 }

@@ -50,6 +50,18 @@ public class OrderController {
         return new ResponseEntity(null, HttpStatus.OK);
     }
 
+    @GetMapping("/accept")
+    @ApiOperation("client accept the order")
+    public ResponseEntity acceptOrder(String driverId, String orderId) {
+        try {
+            orderMapper.setDriver(driverId, orderId);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity("successfully accepted, then you can pay the driver", HttpStatus.OK);
+    }
+
+
     @PutMapping("/order")
     @ApiOperation(value = "Update order status, used to fetch order, confirm transport, payment ")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Updated successfully", response = ResponseEntity.class),
@@ -149,8 +161,7 @@ public class OrderController {
         // give client a notification
         Order order = orderMapper.selectOrderById(orderId);
 
-        emailFeignClient.quoteEmail(order.getClientId(), String.valueOf(quote), order.getStartAddress(),
-                order.getEndAddress(), driverId);
+        emailFeignClient.quoteEmail(order.getClientId(), String.valueOf(quote), driverId, orderId);
 
         return new ResponseEntity(null, HttpStatus.CREATED);
     }
