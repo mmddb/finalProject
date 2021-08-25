@@ -47,6 +47,10 @@ public interface OrderMapper {
 
     @Delete("DELETE FROM Orders WHERE orderId = #{orderId}")
     void deleteOrder(String orderId);
+    
+    @Insert("INSERT INTO photos VALUES(#{orderId}, LOAD_FILE(#{photopath}))")
+    void insertPhoto(String orderId, String photopath);
+
 
 
 

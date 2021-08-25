@@ -138,12 +138,15 @@ public class LoginController {
     @PostMapping("/review")
     @ApiOperation(value = "Leave review to driver on specific order")
     @ApiImplicitParam(name = "token", paramType = "header", required = true)
+    @ApiResponses(value = {@ApiResponse(code = 400, message = "Have reviewed", response = ResponseEntity.class),
+            @ApiResponse(code = 201, message = "Created successfully", response = ResponseEntity.class)})
     public ResponseEntity publishReview(@RequestBody Review review){
         System.out.println(review);
         try{
             userMapper.insertReview(review);
         }catch (Exception e){
             e.printStackTrace();
+            return new ResponseEntity("have reviewed", HttpStatus.BAD_REQUEST);
         }finally {
         }
         return new ResponseEntity(null, HttpStatus.CREATED);

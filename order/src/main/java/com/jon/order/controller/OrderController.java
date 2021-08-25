@@ -10,9 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 @RestController
 @CrossOrigin(originPatterns = "*")
@@ -177,6 +183,25 @@ public class OrderController {
             return new ResponseEntity(null, HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity(qs, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/photo")
+    public ResponseEntity<String> uploadImage(
+            @RequestBody MultipartFile photo,
+            String orderId)
+            throws IOException {
+       System.out.println("--got request to update Lot Image--");
+       try {
+            byte[] bytes = photo.getBytes();
+            // 写到本地
+
+
+       } catch (IOException e) {
+            e.printStackTrace();
+       }
+
+       System.out.println("--Image updated--");
+       return new ResponseEntity<String>("Success", HttpStatus.OK);
     }
 
 
