@@ -150,6 +150,22 @@ public class OrderController {
         return new ResponseEntity(orders, HttpStatus.OK);
     }
 
+    @GetMapping("/order")
+    @ApiOperation(value = "Get all orders that not be fetched")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Query successfully", response = ResponseEntity.class),
+            @ApiResponse(code = 204, message = "No Content", response = ResponseEntity.class)
+    })
+    public ResponseEntity limitquery(String start, String pagesize) {
+        List<Order> orders;
+        try {
+            orders = orderMapper.selectLimitOrders(Integer.valueOf(start), Integer.valueOf(pagesize));
+        }catch(Exception e){
+            return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+        }
+        System.out.println(orders);
+        return new ResponseEntity(orders, HttpStatus.OK);
+    }
+
 
     @PostMapping("/quote")
     @ApiOperation(value = "Drivers give a quote to an order")
