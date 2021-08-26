@@ -18,6 +18,9 @@ public interface OrderMapper {
     @Select("SELECT * FROM Orders WHERE status = 'PUBLISHED'")
     List<Order> selectAllOrder();
 
+    @Select("SELECT * FROM Orders WHERE status = 'PUBLISHED' limit #{start}, #{pageSize}")
+    List<Order> selectLimitOrders(int start, int pageSize);
+
     @Select("SELECT * FROM Orders WHERE orderId = #{orderId}")
     Order selectOrderById(String orderId);
 

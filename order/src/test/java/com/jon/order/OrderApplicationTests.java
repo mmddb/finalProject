@@ -1,6 +1,7 @@
 package com.jon.order;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.pagehelper.PageHelper;
 import com.jon.order.controller.OrderController;
 
 
@@ -88,9 +89,15 @@ public class OrderApplicationTests {
     @Test
     @Rollback
     public void concurrencyTest() throws Exception {
-        startTaskAllInOnce(100);
+        // startTaskAllInOnce(100);
         // 2000 6s
         // 1000 3s
+    }
+
+    @Test
+    public void limitquery() {
+        List<Order> orders = orderMapper.selectLimitOrders(0, 10);
+        System.out.println(orders);
     }
 
     public void startTaskAllInOnce(int threadNums) throws InterruptedException {
