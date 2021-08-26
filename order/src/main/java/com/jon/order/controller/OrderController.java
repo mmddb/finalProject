@@ -150,7 +150,7 @@ public class OrderController {
         return new ResponseEntity(orders, HttpStatus.OK);
     }
 
-    @GetMapping("/order")
+    @GetMapping("/limitorder")
     @ApiOperation(value = "Get all orders that not be fetched")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Query successfully", response = ResponseEntity.class),
             @ApiResponse(code = 204, message = "No Content", response = ResponseEntity.class)
