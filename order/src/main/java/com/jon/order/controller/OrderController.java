@@ -78,10 +78,9 @@ public class OrderController {
         Order order = orderMapper.selectOrderById(orderId);
         System.out.println(order);
         OrderStatus curStat = order.getStatus();
-//        if(status.compareTo(curStat) <= 0){
-//            System.out.println(status.compareTo(curStat));
-//            return new ResponseEntity(null, HttpStatus.NOT_ACCEPTABLE);
-//        }
+        if(status.compareTo(curStat) <= 0){
+            return new ResponseEntity(null, HttpStatus.NOT_ACCEPTABLE);
+        }
         System.out.println(status);
         try {
             if(status.equals(OrderStatus.FETCHED)){
