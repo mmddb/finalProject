@@ -16,4 +16,5 @@ public interface EmailFeignClient {
 
     @PostMapping(value = "/statusemail")
     void statusEmail(@RequestParam String status, @RequestParam String userId, @RequestParam String orderId);
+
 }

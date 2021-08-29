@@ -102,7 +102,6 @@ public class OrderController {
         }catch (Exception e){
             return new ResponseEntity("Email service is dead", HttpStatus.FAILED_DEPENDENCY);
         }
-
         return new ResponseEntity(null, HttpStatus.OK);
     }
 
@@ -187,9 +186,11 @@ public class OrderController {
         System.out.println(q);
         // give client a notification
         Order order = orderMapper.selectOrderById(orderId);
-
-        emailFeignClient.quoteEmail(order.getClientId(), String.valueOf(quote), driverId, orderId);
-
+        try {
+            emailFeignClient.quoteEmail(order.getClientId(), String.valueOf(quote), driverId, orderId);
+        }catch (Exception e){
+            return new ResponseEntity("Email service is dead", HttpStatus.FAILED_DEPENDENCY);
+        }
         return new ResponseEntity(null, HttpStatus.CREATED);
     }
 
