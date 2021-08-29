@@ -51,7 +51,13 @@ public class OrderController {
 
     @DeleteMapping("/order")
     @ApiOperation("delete order")
+    @ApiResponse(code = 406, message = "Current Order status is not accept cancel", response = ResponseEntity.class)
     public ResponseEntity deleteOrder(String user, String type, String orderId) {
+        Order order = orderMapper.selectOrderById(orderId);
+        OrderStatus status = order.getStatus();
+        if(status != OrderStatus.PUBLISHED){
+            return new ResponseEntity(null, HttpStatus.NOT_ACCEPTABLE);
+        }
         orderMapper.deleteOrder(orderId);
         return new ResponseEntity(null, HttpStatus.OK);
     }
