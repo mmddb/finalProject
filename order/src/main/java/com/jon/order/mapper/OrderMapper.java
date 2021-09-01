@@ -39,6 +39,7 @@ public interface OrderMapper {
     @Insert({"INSERT INTO Quotes (driverId, quote) VALUES(#{driverId},#{quote}) "})
     void insertQuoteMistake(Quote q);
 
+
     @Select("SELECT * FROM Quotes WHERE orderId = #{orderId}")
     List<Quote> selectByOrderId(String orderId);
 

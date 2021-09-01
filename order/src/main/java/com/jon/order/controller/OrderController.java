@@ -59,7 +59,26 @@ public class OrderController {
             return new ResponseEntity(null, HttpStatus.NOT_ACCEPTABLE);
         }
         orderMapper.deleteOrder(orderId);
+
+        try{
+            List<String> drivers = quotedDriver(orderId);
+            for(String driverId : drivers) {
+                emailFeignClient.statusEmail("Cancel", driverId, orderId);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         return new ResponseEntity(null, HttpStatus.OK);
+    }
+
+    List<String> quotedDriver(String orderId){
+        List<String> drivers = new ArrayList<>();
+        List<Quote> quotes = orderMapper.selectByOrderId(orderId);
+        for(Quote quote : quotes){
+            drivers.add(quote.getDriverId());
+        }
+        return drivers;
     }
 
     @GetMapping("/accept")
