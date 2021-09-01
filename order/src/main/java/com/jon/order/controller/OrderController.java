@@ -226,6 +226,21 @@ public class OrderController {
         return new ResponseEntity(qs, HttpStatus.OK);
     }
 
+    @GetMapping("/myquote")
+    @ApiOperation(value = "Get all quotes for an order")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Get Successfully", response = ResponseEntity.class),
+            @ApiResponse(code = 204, message = "No Content", response = ResponseEntity.class)
+    })
+    public ResponseEntity myQuotes(String driverId){
+        List<Quote> qs = orderMapper.selectQuoteByDriverId(driverId);
+        if(qs.size() == 0){
+            return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity(qs, HttpStatus.OK);
+    }
+
+
+
     @PostMapping(value = "/photo")
     public ResponseEntity<String> uploadImage(
             @RequestBody MultipartFile photo,

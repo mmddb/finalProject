@@ -43,6 +43,11 @@ public interface OrderMapper {
     @Select("SELECT * FROM Quotes WHERE orderId = #{orderId}")
     List<Quote> selectByOrderId(String orderId);
 
+    @Select("SELECT * FROM Quotes WHERE driverId = #{driverId}")
+    List<Quote> selectQuoteByDriverId(String driverId);
+
+
+
     @Select("SELECT * FROM Orders WHERE clientId = #{clientId}")
     List<Order> selectByClientId(String clientId);
 
