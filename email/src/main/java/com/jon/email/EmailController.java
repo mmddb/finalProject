@@ -72,10 +72,10 @@ public class EmailController {
             System.out.println(clientEmail + payment + content);
 
             // 接受链接 set fetched orderId, driverid, PUT ??
-            String accept = "You can click http://localhost:8082/accept?driverId="+driverId+"&orderId="+orderId
+            String accept = "You can click http://34.150.38.10:8082/accept?driverId="+driverId+"&orderId="+orderId
                     + " to accept \n";
             // reviews
-            String review = "Click http://localhost:8081/review?userId="+driverId
+            String review = "Click http://34.150.38.10:8081/review?userId="+driverId
                     + " to see the reviews of driver";
 
             send(clientEmail, "New quote", content  + accept + review);
